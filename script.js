@@ -17,6 +17,7 @@ const specialPrizeDropdown2  = document.querySelector('#special-prize-dropdown2'
 const specialPrizeAmountInput = document.querySelector('#special-prize-amount-input');
 const specialBalanceBtn = document.querySelector('#special-balance-btn');
 const specialBalanceInput = document.querySelector('#special-balance-input');
+const clearAllBtn = document.querySelector('#clear-all-btn');
 
 const winnerLists = [
   document.querySelector('#winner-list'),
@@ -655,6 +656,7 @@ function handleWinnerText(winner) {
 
   showWinnerEffect();
   updateCounts();
+  saveState();
 };
 
 
@@ -710,6 +712,7 @@ winnerLists.forEach(list => {
 
     // 從已中獎名單移除
     drawnWinners.delete(key);
+    saveState();
 
     // 刪畫面
     li.remove();
@@ -910,4 +913,112 @@ function populateSpecialPrizeList2() {
 // 初始化呼叫
 populateSpecialPrizeList2();
 
+
+//自動存檔
+
+function saveState() {
+  localStorage.setItem('winnerData', JSON.stringify(winnerData));
+  localStorage.setItem(
+    'drawnWinners',
+    JSON.stringify([...drawnWinners])
+  );
+};
+
+(function restoreState() {
+  const savedWinners = localStorage.getItem('winnerData');
+  const savedDrawn = localStorage.getItem('drawnWinners');
+
+  if (!savedWinners || !savedDrawn) return;
+
+  try {
+    winnerData = JSON.parse(savedWinners);
+    drawnWinners = new Set(JSON.parse(savedDrawn));
+
+    // 清空現有畫面
+    winnerLists.forEach(list => list.innerHTML = '');
+
+    // 重新建立 li
+    for (let i = winnerData.length - 1; i >= 0; i--) {
+      const w = winnerData[i];
+      const li = document.createElement('li');
+      li.dataset.key = `${w.dept}-${w.name}`;
+
+      let displayLine = '';
+      if (w.prizeAmounts || w.specialBonus) {
+        displayLine = `【金額：${(w.prizeAmounts || 0).toLocaleString()}${w.specialBonus ? ' + 現金加碼：' + w.specialBonus.toLocaleString() : ''}】`;
+      };
+
+      let bonusLine = '';
+      if (w.bonusSource) bonusLine = `<p style="color:#D67158;">【${w.bonusSource}-幸運分享】</p>`;
+      else if (w.bonus2Source) bonusLine = `<p style="color:#D67158;">【${w.bonus2Source}】</p>`;
+
+      li.innerHTML = `
+        <p>${w.prize}${displayLine}：${w.dept} - ${w.name}</p>
+        ${bonusLine}
+        <span class="remove-btn" style="cursor:pointer;color:red;">✖</span>
+      `;
+
+      winnerLists.forEach(list => list.appendChild(li.cloneNode(true)));
+    };
+
+    updateCounts();
+  } catch (e) {
+    console.error('還原失敗，清除舊資料', e);
+    localStorage.clear();
+  };
+})();
+
+
+//刪除歷史紀錄
+
+clearAllBtn.addEventListener('click', () => {
+  if (winnerData.length === 0) return;
+
+  // 顯示確認 toast
+  const confirmBody = document.querySelector('#confirm-toast-body');
+  confirmBody.innerHTML  = `<p>確定要移除所有歷史名單嗎？刪除後無法復原！</p>`;
+
+  const confirmToastEl = document.querySelector('#confirm-toast');
+  const confirmToast = new bootstrap.Toast(confirmToastEl);
+  confirmToast.show();
+
+  const yesBtn = document.querySelector('#confirm-yes');
+  const noBtn = document.querySelector('#confirm-no');
+
+  const cleanup = () => {
+    yesBtn.onclick = null;
+    noBtn.onclick = null;
+  };
+
+  yesBtn.onclick = () => {
+    cleanup();
+    confirmToast.hide();
+
+    // 清除記憶資料
+    winnerData = [];
+    drawnWinners.clear();
+
+    // 清空畫面
+    winnerLists.forEach(list => list.innerHTML = '');
+
+    // 清除 localStorage
+    localStorage.removeItem('winnerData');
+    localStorage.removeItem('drawnWinners');
+
+    //更新統計
+    updateCounts();
+
+    //成功 Toast
+    const successBody = document.getElementById("success-toast-body");
+    successBody.innerHTML = `<p>已清除所有中獎名單</p>`;
+    const successToastEl = document.getElementById("success-toast");
+    const successToast = new bootstrap.Toast(successToastEl);
+    successToast.show();
+  };
+
+  noBtn.onclick = () => {
+    cleanup();
+    confirmToast.hide();
+  };
+});
 
