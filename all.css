@@ -72,9 +72,13 @@ ol, ul {
   flex-direction: column;
 }
 .slot .symbol {
-  height: 90px;
-  line-height: 90px;
+  height: 120px;
   font-weight: bold;
+  display: flex;
+  align-items: center; /* 垂直置中 */
+  justify-content: center; /* 水平置中 */
+  font-weight: bold;
+  text-align: center;
 }
 .slot .reel {
   border-right: 1px solid #acacac;
@@ -83,7 +87,7 @@ ol, ul {
   border-right: none;
 }
 .slot .symbol.winner-highlight {
-  font-size: 1.8em;
+  font-size: 1.2em;
   font-weight: bold;
   background: rgba(208, 103, 87, 0.2);
 }

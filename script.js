@@ -49,19 +49,14 @@ document.addEventListener('click', e => {
 
 // 1~8獎的固定金額
 const prizeAmounts = {
-  1: 30000,
-  2: 20000,
-  3: 15000,
-  4: 10000,
-  5: 8000,
-  6: 7000,
-  7: 6000,
-  8: 5000
+  1: 5000,
+  2: 1500,
+  3: 1000,
 };
 
 
 
-const ITEM_HEIGHT = 90;
+const ITEM_HEIGHT = 120;
 
 //設定拉霸三軸
 const reels = [
@@ -146,16 +141,12 @@ document.querySelector('#export-btn').addEventListener('click', () => {
 //獎項圈數設定
 function getFullRounds(prizeValue) {
   const roundsMap = {
-    1: 15,
-    2: 12,
-    3: 10,
-    4: 9,
-    5: 7,
-    6: 5,
-    7: 4,
-    8: 3,
+    1: 8,
+    2: 5,
+    3: 4,
     9: 3,
-    10: 3
+    10: 3,
+    11: 3,
   };
   return roundsMap[prizeValue] || 3;
 };
@@ -345,72 +336,61 @@ async function doDraw() {
   const prizeValue = parseInt(dropdownButton.dataset.value) || 1;
   const fullRounds = getFullRounds(prizeValue);
 
-  const noDelayPrizes = [7, 8];
 
-  let reelDurations;
-
-  if (noDelayPrizes.includes(prizeValue)) {
-    reelDurations = [
-      800 + fullRounds * 200,
-      800 + fullRounds * 200 + 300,
-      800 + fullRounds * 200 + 800
-    ];
-  } else {
     reelDurations = [
       800 + fullRounds * 200,
       800 + fullRounds * 200 + 3000,
       800 + fullRounds * 200 + 6000
     ];
-  };
 
   const viewportHeight = document.querySelector('.scroll-viewport').offsetHeight;
   const centerOffset = (viewportHeight / 2) - (ITEM_HEIGHT / 2);
 
-  if (dropdownButton.dataset.value === "1") {
-    const totalTime = 10000; // 10秒總時長
-    const midAnimationTime = 1000; // 中間動畫 1 秒
-    const firstHalfTime = 3500; // 第一段滾輪 3.5 秒
-    const secondHalfTime = totalTime - midAnimationTime - firstHalfTime; // 第二段滾輪剩下 5.5 秒
+  // if (dropdownButton.dataset.value === "1") {
+  //   const totalTime = 10000; // 10秒總時長
+  //   const midAnimationTime = 1000; // 中間動畫 1 秒
+  //   const firstHalfTime = 3500; // 第一段滾輪 3.5 秒
+  //   const secondHalfTime = totalTime - midAnimationTime - firstHalfTime; // 第二段滾輪剩下 5.5 秒
 
-    // 獎項1：分兩段滾輪 + 中間暫停動畫
-    const halfRounds = Math.floor(fullRounds / 2);
+  //   // 獎項1：分兩段滾輪 + 中間暫停動畫
+  //   const halfRounds = Math.floor(fullRounds / 2);
 
-    // 第一段滾輪：滾到距離中獎者還 3 格的位置（修正避免空白或消失）
-    const preTargetIndexes = reels.map((r, i) => {
-      const target = reelTargetIndexes[i];
-      const fullLength = r.mapIndex.length;
-      return (target - 3 + fullLength) % fullLength;
-    });
+  //   // 第一段滾輪：滾到距離中獎者還 3 格的位置（修正避免空白或消失）
+  //   const preTargetIndexes = reels.map((r, i) => {
+  //     const target = reelTargetIndexes[i];
+  //     const fullLength = r.mapIndex.length;
+  //     return (target - 3 + fullLength) % fullLength;
+  //   });
 
-    await Promise.all([
-      spinReel(reels[0], preTargetIndexes[0], firstHalfTime, 0, halfRounds),
-      spinReel(reels[1], preTargetIndexes[1], firstHalfTime, 0, halfRounds),
-      spinReel(reels[2], preTargetIndexes[2], firstHalfTime, 0, halfRounds)
-    ]);
+  //   await Promise.all([
+  //     spinReel(reels[0], preTargetIndexes[0], firstHalfTime, 0, halfRounds),
+  //     spinReel(reels[1], preTargetIndexes[1], firstHalfTime, 0, halfRounds),
+  //     spinReel(reels[2], preTargetIndexes[2], firstHalfTime, 0, halfRounds)
+  //   ]);
 
-    // 暫停 + 動畫（你的淡出/彈入/空白邏輯）
-    await freezeMidAnimation(2000);
+  //   // 暫停 + 動畫（你的淡出/彈入/空白邏輯）
+  //   await freezeMidAnimation(2000);
 
-    // 第二段滾輪：分別啟動，每軸帶入小 delay 以產生依序停的感覺
-    const p0 = spinReel(reels[0], reelTargetIndexes[0], reelDurations[0] / 2, 0, fullRounds - halfRounds)
-      .then(() => highlightReel(0));
-    const p1 = spinReel(reels[1], reelTargetIndexes[1], reelDurations[1] / 2, 150, fullRounds - halfRounds)
-      .then(() => highlightReel(1));
-    const p2 = spinReel(reels[2], reelTargetIndexes[2], reelDurations[2] / 2, 300, fullRounds - halfRounds)
-      .then(() => highlightReel(2));
+  //   // 第二段滾輪：分別啟動，每軸帶入小 delay 以產生依序停的感覺
+  //   const p0 = spinReel(reels[0], reelTargetIndexes[0], reelDurations[0] / 2, 0, fullRounds - halfRounds)
+  //     .then(() => highlightReel(0));
+  //   const p1 = spinReel(reels[1], reelTargetIndexes[1], reelDurations[1] / 2, 150, fullRounds - halfRounds)
+  //     .then(() => highlightReel(1));
+  //   const p2 = spinReel(reels[2], reelTargetIndexes[2], reelDurations[2] / 2, 300, fullRounds - halfRounds)
+  //     .then(() => highlightReel(2));
 
-    await Promise.all([p0, p1, p2]);
+  //   await Promise.all([p0, p1, p2]);
 
-    handleWinnerText(winner);
-    populateSpecialPrizeList();
+  //   handleWinnerText(winner);
+  //   populateSpecialPrizeList();
 
-    setTimeout(() => {
-      main.classList.remove('active');
-      lever.classList.remove('no-glow');
-      startAutoScroll();
-      isConfirming = false;
-    }, 4000);
-  } else {
+  //   setTimeout(() => {
+  //     main.classList.remove('active');
+  //     lever.classList.remove('no-glow');
+  //     startAutoScroll();
+  //     isConfirming = false;
+  //   }, 4000);
+  // } else {
     // 其他獎項保持原流程
     const p0 = spinReel(reels[0], reelTargetIndexes[0], reelDurations[0], 0, fullRounds)
       .then(() => highlightReel(0));
@@ -434,7 +414,7 @@ async function doDraw() {
         }, 4000);
       });
   };
-};
+// };
 
 
 function spinReel(reel, targetIndex, duration = 3000, delay = 0, fullRounds = 3) {
@@ -446,33 +426,32 @@ function spinReel(reel, targetIndex, duration = 3000, delay = 0, fullRounds = 3)
       const viewportHeight = document.querySelector('.scroll-viewport').offsetHeight;
       const centerOffset = (viewportHeight / 2) - (ITEM_HEIGHT / 2);
 
-      // ⭐ 找「最接近中間輪次」的 target，而不是最後一個
+
       const totalItems = reel.mapIndex.length;
       let reelTargetItemIndex = null;
       for (let i = 0; i < totalItems; i++) {
         if (reel.mapIndex[i] === targetIndex) {
-          // 找第一個可見的，避免 append 多輪後停錯
           if (i * ITEM_HEIGHT >= startPos) {
             reelTargetItemIndex = i;
             break;
-          }
-        }
-      }
-      // 如果沒找到，直接用最後一個
+          };
+        };
+      };
+
       if (reelTargetItemIndex === null) {
         for (let i = totalItems - 1; i >= 0; i--) {
           if (reel.mapIndex[i] === targetIndex) {
             reelTargetItemIndex = i;
             break;
-          }
-        }
-      }
+          };
+        };
+      };
 
       const targetPos = reelTargetItemIndex * ITEM_HEIGHT;
 
       function easeOutQuad(t) {
         return t * (2 - t);
-      }
+      };
 
       function animate(now) {
         let t = (now - startTime) / duration;
@@ -490,19 +469,19 @@ function spinReel(reel, targetIndex, duration = 3000, delay = 0, fullRounds = 3)
         if (t < 1) {
           requestAnimationFrame(animate);
         } else {
-          // ⭐ 最終強制對齊中心
           const finalTransform = targetPos - centerOffset;
           reel.el.style.transform = `translateY(-${finalTransform}px)`;
-          reel.position = finalTransform; // ⭐ 同步更新 reel.position
+          reel.position = finalTransform;
+          reel.position
           reel.finalItemIndex = reelTargetItemIndex;
           resolve();
-        }
-      }
+        };
+      };
 
       requestAnimationFrame(animate);
     }, delay);
   });
-}
+};
 
 
 
@@ -702,7 +681,7 @@ winnerLists.forEach(list => {
 
       const record = winnerData[index];
 
-      // ⭐ 如果刪的是「分享事件」，要回扣 balance
+      // 如果刪的是「分享事件」，要回扣 balance
       if (record.shareToId) {
         const target = winnerData.find(w => w.id === record.shareToId);
         if (target) {
@@ -732,7 +711,7 @@ winnerLists.forEach(list => {
     successToast.show();
     };
 
-    // === 按下「取消」 ===
+    // 按下「取消」
     noBtn.onclick = () => {
       cleanup();
       confirmToast.hide();

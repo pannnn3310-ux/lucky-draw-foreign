@@ -84,9 +84,13 @@ ol, ul {
   }
 
   .symbol {
-    height: 90px;
-    line-height: 90px;
+    height: 120px;
     font-weight: bold;
+    display: flex;
+    align-items: center;      /* 垂直置中 */
+    justify-content: center;  /* 水平置中 */
+    font-weight: bold;
+    text-align: center;
   }
   .reel {
   border-right: 1px solid #acacac;
@@ -97,7 +101,7 @@ ol, ul {
 
   //中獎後框住
   .symbol.winner-highlight {
-    font-size: 1.3em;
+    font-size: 1.2em;
     font-weight: bold;
     background: rgba(208, 103, 87, 0.2);
     @media (max-width: 768px) {
@@ -252,65 +256,65 @@ ol, ul {
   }
 }
 
-.freeze-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0);
-  backdrop-filter: none;
-  pointer-events: none;
-  transition: 0.3s ease;
-}
+// .freeze-overlay {
+//   position: fixed;
+//   inset: 0;
+//   background: rgba(0,0,0,0);
+//   backdrop-filter: none;
+//   pointer-events: none;
+//   transition: 0.3s ease;
+// }
 
-.freeze-overlay.active {
-  background: rgba(0,0,0,0.4);
-  backdrop-filter: blur(4px);
-}
+// .freeze-overlay.active {
+//   background: rgba(0,0,0,0.4);
+//   backdrop-filter: blur(4px);
+// }
 
 /* --- 超狂電視壞掉效果 --- */
-.glitch-tv {
-  position: relative;
-  animation: tv-shake 0.25s infinite, tv-flicker 0.3s infinite alternate;
-}
+// .glitch-tv {
+//   position: relative;
+//   animation: tv-shake 0.25s infinite, tv-flicker 0.3s infinite alternate;
+// }
 
 /* RGB 分裂 */
-.glitch-tv::before,
-.glitch-tv::after {
-  content: attr(data-text);
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%;
-  clip-path: inset(0 0 0 0);
-}
+// .glitch-tv::before,
+// .glitch-tv::after {
+//   content: attr(data-text);
+//   position: absolute;
+//   top: 0; left: 0;
+//   width: 100%;
+//   clip-path: inset(0 0 0 0);
+// }
 
-.glitch-tv::before {
-  left: 4px;
-  text-shadow: -4px 0 red;
-  animation: glitch-slice 0.25s infinite;
-}
+// .glitch-tv::before {
+//   left: 4px;
+//   text-shadow: -4px 0 red;
+//   animation: glitch-slice 0.25s infinite;
+// }
 
-.glitch-tv::after {
-  left: -4px;
-  text-shadow: 4px 0 rgb(0, 0, 0);
-  animation: glitch-slice 0.3s infinite reverse;
-}
+// .glitch-tv::after {
+//   left: -4px;
+//   text-shadow: 4px 0 rgb(0, 0, 0);
+//   animation: glitch-slice 0.3s infinite reverse;
+// }
 
 
 /* 主畫面震動 */
-@keyframes tv-shake {
-  0% { transform: translate(0); }
-  20% { transform: translate(-3px, 2px); }
-  40% { transform: translate(3px, -2px); }
-  60% { transform: translate(-2px, 1px); }
-  80% { transform: translate(2px, -1px); }
-  100% { transform: translate(0); }
-}
+// @keyframes tv-shake {
+//   0% { transform: translate(0); }
+//   20% { transform: translate(-3px, 2px); }
+//   40% { transform: translate(3px, -2px); }
+//   60% { transform: translate(-2px, 1px); }
+//   80% { transform: translate(2px, -1px); }
+//   100% { transform: translate(0); }
+// }
 
-/* 閃爍 + 噪波 */
-@keyframes tv-flicker {
-  0% { opacity: 0.9; filter: contrast(1) brightness(1); }
-  50% { opacity: 0.5; filter: contrast(1.4) brightness(0.7); }
-  100% { opacity: 1; filter: contrast(0.8) brightness(1.2); }
-}
+// /* 閃爍 + 噪波 */
+// @keyframes tv-flicker {
+//   0% { opacity: 0.9; filter: contrast(1) brightness(1); }
+//   50% { opacity: 0.5; filter: contrast(1.4) brightness(0.7); }
+//   100% { opacity: 1; filter: contrast(0.8) brightness(1.2); }
+// }
 
 //抽獎動畫
 
