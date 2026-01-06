@@ -18,6 +18,7 @@ const specialPrizeAmountInput = document.querySelector('#special-prize-amount-in
 const specialBalanceBtn = document.querySelector('#special-balance-btn');
 const specialBalanceInput = document.querySelector('#special-balance-input');
 const clearAllBtn = document.querySelector('#clear-all-btn');
+const stickChang = document.querySelector('.stick');
 
 const winnerLists = [
   document.querySelector('#winner-list'),
@@ -269,6 +270,7 @@ dropdownItems.forEach(item => {
       specialPrizeInput2.style.display = "none";
       specialPrizeAmountInput.style.display = "block";
       specialBalanceBtn.style.display = "block";
+      stickChang.style.top = "15%";
     } else if (value === "10"){
       specialBalanceInput.style.display = "none";
       specialPrizeContainer.style.display = "block";
@@ -276,6 +278,7 @@ dropdownItems.forEach(item => {
       specialPrizeInput.style.display = "none";
       specialBalanceBtn.style.display = "none";
       specialPrizeAmountInput.style.display = "block";
+      stickChang.style.top = "5%";
     } else if (value === "11") {  // 額外加碼獎
       specialBalanceInput.style.display = "none";
       specialPrizeContainer.style.display = "block";
@@ -283,11 +286,12 @@ dropdownItems.forEach(item => {
       specialPrizeInput2.style.display = "none";
       specialPrizeAmountInput.style.display = "block";
       specialBalanceBtn.style.display = "block";
+      stickChang.style.top = "5%";
     } else {
       specialPrizeContainer.style.display = "none";
       specialBalanceBtn.style.display = "none";
+      stickChang.style.top = "0%";
     };
-
   });
 });
 
@@ -944,8 +948,12 @@ function saveState() {
       li.dataset.key = `${w.dept}-${w.name}`;
 
       let displayLine = '';
-      if (w.prizeAmounts || w.specialBonus) {
-        displayLine = `【金額：${(w.prizeAmounts || 0).toLocaleString()}${w.specialBonus ? ' + 現金加碼：' + w.specialBonus.toLocaleString() : ''}】`;
+      if (w.prizeAmounts && w.specialBonus) {
+        displayLine = `【金額：${w.prizeAmounts.toLocaleString()} + 現金加碼：${w.specialBonus.toLocaleString()}】`;
+      } else if (w.prizeAmounts) {
+        displayLine = `【金額：${w.prizeAmounts.toLocaleString()}】`;
+      } else if (w.specialBonus) {
+        displayLine = `【金額：${w.specialBonus.toLocaleString()}】`;
       };
 
       let bonusLine = '';
