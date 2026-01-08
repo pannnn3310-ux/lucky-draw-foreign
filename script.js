@@ -800,7 +800,7 @@ winnerLists.forEach(list => {
     const confirmBody = document.querySelector('#confirm-toast-body');
     confirmBody.innerHTML  = `
     <div class="text-center"
-      <p>確定要移除<span class="text-danger">${key}</span>嗎？</p>
+      <p>確定要移除<span class="text-danger">工號：${key}</span>嗎？</p>
       <p>移除後會回到抽獎名單內。</p>
     </div>`
     ;
