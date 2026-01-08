@@ -301,7 +301,7 @@ dropdownItems.forEach(item => {
       specialPrizeInput2.style.display = "none";
       specialPrizeAmountInput.style.display = "block";
       specialBalanceBtn.style.display = "block";
-      stickChang.style.top = "15%";
+      setStickOffset(110);
     } else if (value === "10"){
       specialBalanceInput.style.display = "none";
       specialPrizeContainer.style.display = "block";
@@ -309,7 +309,7 @@ dropdownItems.forEach(item => {
       specialPrizeInput.style.display = "none";
       specialBalanceBtn.style.display = "none";
       specialPrizeAmountInput.style.display = "block";
-      stickChang.style.top = "5%";
+      setStickOffset(40);
     } else if (value === "11") {  // 額外加碼獎
       specialBalanceInput.style.display = "none";
       specialPrizeContainer.style.display = "block";
@@ -317,11 +317,11 @@ dropdownItems.forEach(item => {
       specialPrizeInput2.style.display = "none";
       specialPrizeAmountInput.style.display = "block";
       specialBalanceBtn.style.display = "block";
-      stickChang.style.top = "5%";
+      setStickOffset(35);
     } else {
       specialPrizeContainer.style.display = "none";
       specialBalanceBtn.style.display = "none";
-      stickChang.style.top = "0%";
+      setStickOffset(0);
     };
   });
 });
@@ -1198,3 +1198,8 @@ clearAllBtn.addEventListener('click', () => {
   };
 });
 
+//拉霸高度用
+
+function setStickOffset(px) {
+  stickChang.style.transform = `translateY(calc(0% + ${px}px))`;
+}
