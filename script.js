@@ -342,12 +342,24 @@ dropdownItems.forEach(item => {
   });
 });
 
+function hasSelectedPrize() {
+  return !!dropdownButton.dataset.value;
+};
 
 // 拉霸按鈕事件
 document.querySelectorAll('.lever .prize-btn').forEach(btn => {
   btn.addEventListener('click', async (e) => {
     e.preventDefault();
     e.stopPropagation();
+
+    if (!hasSelectedPrize()) {
+      const listToast = document.querySelector('#list-toast-body');
+      listToast.innerHTML = `<p class="m-0">請先選擇獎項！</p>`;
+      const toastElement = document.querySelector('#list-toast');
+      const toast = new bootstrap.Toast(toastElement);
+      toast.show();
+      return;
+    };
 
     if (isConfirming) return;
     if (allNames.length === 0) {
