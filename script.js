@@ -22,6 +22,41 @@ const clearAllBtn = document.querySelector('#clear-all-btn');
 const cashBuns = document.querySelector('#cash-bonus-label');
 const stickChang = document.querySelector('.stick');
 
+
+
+//music
+const drawSound = document.querySelector('#draw-sound');
+const drawSound1 = document.querySelector('#draw-sound-1');
+const winSound = document.querySelector('#win-sound');
+const don = document.querySelector('#win-don');
+const cheer = document.querySelector('#cheer');
+
+function playDrawSound() {
+  drawSound.currentTime = 0;
+  drawSound.play();
+};
+
+function stopDrawSound() {
+  drawSound.pause();
+  drawSound.currentTime = 0;
+};
+
+
+function playDon() {
+  const a = new Audio(don.src);
+  a.play();
+};
+
+function playCheer() {
+  cheer.currentTime = 0;
+  cheer.play();
+};
+
+function playWinSound() {
+  winSound.currentTime = 0;
+  winSound.play();
+};
+
 const winnerLists = [
   document.querySelector('#winner-list'),
   document.querySelector('#winner-list-mobile')
@@ -343,9 +378,10 @@ dropdownItems.forEach(item => {
       specialPrizeInput.style.display = "none";
       specialPrizeInput2.style.display = "none";
       specialPrizeAmountInput.style.display = "block";
-      specialBalanceBtn.style.display = "block";
+      specialBalanceBtn.style.display = "none";
       cashBuns.style.display = 'none';
       setStickOffset(35);
+      specialPrizeContainer.classList.replace('mt-2', 'mt-4');
     } else {
       specialPrizeContainer.style.display = "none";
       specialBalanceBtn.style.display = "none";
@@ -413,8 +449,8 @@ document.querySelectorAll('.lever .prize-btn').forEach(btn => {
         return;
       };
     } else if (selectedPrize === "11") {
-      const bonusAmount = Number(specialPrizeAmountInput.value || 0);
-      if (bonusAmount <= 0) {
+      const amount = Number(specialPrizeAmountInput.value || 0);
+      if (amount <= 0) {
         const listToast = document.querySelector('#list-toast-body');
         listToast.innerHTML = `<p class="m-0">請先輸入金額才能抽獎！</p>`;
         const toastElement = document.querySelector('#list-toast');
@@ -441,6 +477,11 @@ document.querySelectorAll('.lever .prize-btn').forEach(btn => {
 // 抽獎
 
 async function doDraw() {
+
+  stopDrawSound();
+  winSound.pause();
+  winSound.currentTime = 0;
+
   // **抽出還未中獎列表，用途，避免重覆中獎
   const available = allNames.filter(p => !drawnWinners.has(p.id));
   if (!available.length) {
@@ -476,6 +517,8 @@ async function doDraw() {
 
   const viewportHeight = document.querySelector('.scroll-viewport').offsetHeight;
   const centerOffset = (viewportHeight / 2) - (ITEM_HEIGHT / 2);
+
+    playDrawSound();
 
   // if (dropdownButton.dataset.value === "1") {
   //   const totalTime = 10000; // 10秒總時長
@@ -524,14 +567,32 @@ async function doDraw() {
   // } else {
     // 其他獎項保持原流程
     const p0 = spinReel(reels[0], reelTargetIndexes[0], reelDurations[0], 0, fullRounds)
-      .then(() => highlightReel(0));
+      .then(() => {
+        highlightReel(0)
+        playDon();
+      });
     const p1 = spinReel(reels[1], reelTargetIndexes[1], reelDurations[1], 0, fullRounds)
-      .then(() => highlightReel(1));
+      .then(() => {
+        highlightReel(1)
+        playDon();
+      });
     const p2 = spinReel(reels[2], reelTargetIndexes[2], reelDurations[2], 0, fullRounds)
-      .then(() => highlightReel(2))
+      .then(() => {
+        highlightReel(2)
+        playDon();
+      })
       .then(() => {
         // 最終停齊位置正中
         handleWinnerText(winner);
+
+        if (dropdownButton.dataset.value === "1") {
+          stopDrawSound();
+          playWinSound();
+          playCheer();
+        } else {
+          stopDrawSound();
+          playWinSound();
+        };
 
         setTimeout(() => {
           main.classList.remove('active');
