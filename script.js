@@ -68,7 +68,7 @@ specialPrizeAmountInput.addEventListener('input', () => {
 
   validateTimer = setTimeout(() => {
     const value = Number(specialPrizeAmountInput.value);
-      if (value && value < 2000) {
+      if (value && value < 1000) {
         specialPrizeAmountInput.focus();
     specialPrizeAmountInput.classList.add('is-invalid');
       } else {
@@ -542,12 +542,13 @@ async function doDraw() {
 
 
   const prizeExtraTimeMap = {
-    1: 9000,                  //50s
+    1: 9000,                     //16s
     2: 9000,                     //16s
     3: 9000,                     //16s
-    9: 9000,                      //8s
+    9: 9000,                      //16s
     10: 9000,                     //16s
     11: 9000,                     //16s
+    12: 9000,
   };
 
 
