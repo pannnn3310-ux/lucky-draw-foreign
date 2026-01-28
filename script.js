@@ -632,13 +632,6 @@ function spinReel(reel, targetIndex, duration = 3000, delay = 0, fullRounds = 3)
       // travelDistance 保留 fullRounds
       const travelDistance = totalHeight * fullRounds + (targetPos - startPos);
 
-      // easing 函數：前快-中慢-後快
-      function easeInOutTriple(t) {
-        if (t < 0.2) return t * 3 * 0.5;           // 前快
-        if (t < 0.7) return 0.3 + (t - 0.2) * 0.4; // 中慢
-        return 0.7 + (t - 0.7) * 0.3 / 0.3;       // 後快
-      };
-
       function animate(now) {
         let t = (now - startTime) / duration;
         if (t >= 1) {
@@ -650,7 +643,7 @@ function spinReel(reel, targetIndex, duration = 3000, delay = 0, fullRounds = 3)
           return;
         };
 
-        const progress = easeInOutTriple(t);
+        const progress = t;
         const currentPos = startPos + travelDistance * progress;
 
         // 統一從上往下
