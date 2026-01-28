@@ -113,6 +113,7 @@ const prizeAmounts = {
   1: 5000,
   2: 1500,
   3: 1000,
+  12: 3000,
 };
 
 
@@ -208,6 +209,7 @@ function getFullRounds(prizeValue) {
     9: 12,
     10: 12,
     11: 12,
+    12: 12
   };
   return roundsMap[prizeValue] || 3;
 };
