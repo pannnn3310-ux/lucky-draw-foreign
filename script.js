@@ -7,8 +7,7 @@ let allNamesById = [];
 const STORAGE_KEY = 'lucky-draw-foreign_2026';
 const scrollArea = document.querySelector('#scroll-area');
 const dropdownButton = document.querySelector('#prize-btn');
-const prizeText = document.querySelector
-  ('#prize-btn');
+const prizeText = dropdownButton;
 const lever = document.querySelector('.lever');
 const dropdownItems = document.querySelectorAll('.dropdown-item');
 const specialPrizeContainer = document.querySelector('#special-prize-container');
@@ -938,7 +937,7 @@ function handleWinnerText(winner) {
 
   const isSharePrize = prizeValue === "9"
 
-  const shareToId = isSharePrize
+  let shareToId = isSharePrize
   ? specialPrizeInput.dataset.id || null
   : null;
 
@@ -1212,7 +1211,7 @@ function populateSpecialPrizeList2() {
       div.style.cursor = 'pointer';
 
       div.addEventListener('click', () => {
-        specialPrizeInput.dataset.id = div.dataset.id; // 存工號
+        specialPrizeInput2.dataset.id = div.dataset.id; // 存工號
         specialPrizeInput2.value = div.textContent;
         specialPrizeDropdown2.style.display = 'none';
       });
