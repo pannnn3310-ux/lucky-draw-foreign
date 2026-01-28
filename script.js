@@ -202,12 +202,12 @@ document.querySelector('#export-btn').addEventListener('click', () => {
 //獎項圈數設定
 function getFullRounds(prizeValue) {
   const roundsMap = {
-    1: 8,
-    2: 5,
-    3: 4,
-    9: 3,
-    10: 3,
-    11: 3,
+    1: 12,
+    2: 12,
+    3: 12,
+    9: 12,
+    10: 12,
+    11: 12,
   };
   return roundsMap[prizeValue] || 3;
 };
@@ -498,9 +498,8 @@ document.querySelectorAll('.lever .prize-btn').forEach(btn => {
 
 
 // 抽獎
-
 async function doDraw() {
-
+  //音效
   stopDrawSound();
   winSound.pause();
   winSound.currentTime = 0;
@@ -531,128 +530,91 @@ async function doDraw() {
   const prizeValue = parseInt(dropdownButton.dataset.value) || 1;
   const fullRounds = getFullRounds(prizeValue);
 
+  let reelDurations;
 
     reelDurations = [
       800 + fullRounds * 200,
       800 + fullRounds * 200 + 3000,
-      800 + fullRounds * 200 + 6000
+      800 + fullRounds * 200 + 3000
     ];
+
+
+  const prizeExtraTimeMap = {
+    1: 9000,                  //50s
+    2: 9000,                     //16s
+    3: 9000,                     //16s
+    9: 9000,                      //8s
+    10: 9000,                     //16s
+    11: 9000,                     //16s
+  };
+
+
+  const extraTime = prizeExtraTimeMap[prizeValue] || 0;
+  reelDurations = reelDurations.map(t => t + extraTime);
 
   const viewportHeight = document.querySelector('.scroll-viewport').offsetHeight;
   const centerOffset = (viewportHeight / 2) - (ITEM_HEIGHT / 2);
 
-    playDrawSound();
+  playDrawSound();
+  // 其他獎項保持原流程
+  const p0 = spinReel(reels[0], reelTargetIndexes[0], reelDurations[0], 0, fullRounds)
+    .then(() => {
+      highlightReel(0)
+      playDon();
+    });
+  const p1 = spinReel(reels[1], reelTargetIndexes[1], reelDurations[1], 0, fullRounds)
+    .then(() => {
+      highlightReel(1)
+      playDon();
+    });
+  const p2 = spinReel(reels[2], reelTargetIndexes[2], reelDurations[2], 0, fullRounds)
+    .then(() => {
+      highlightReel(2)
+      playDon();
+    })
+    .then(() => {
+      // 最終停齊位置正中
+      handleWinnerText(winner);
+        stopDrawSound();
+        playWinSound();
 
-  // if (dropdownButton.dataset.value === "1") {
-  //   const totalTime = 10000; // 10秒總時長
-  //   const midAnimationTime = 1000; // 中間動畫 1 秒
-  //   const firstHalfTime = 3500; // 第一段滾輪 3.5 秒
-  //   const secondHalfTime = totalTime - midAnimationTime - firstHalfTime; // 第二段滾輪剩下 5.5 秒
+      setTimeout(() => {
+        main.classList.remove('active');
+        lever.classList.remove('no-glow');
+        reels.forEach(reel => {
+          const totalHeight = reel.items.length * ITEM_HEIGHT;
+          reel.position = ((reel.position % totalHeight) + totalHeight) % totalHeight;
+        });
+        startAutoScroll();
+        isConfirming = false;
+      }, 4000);
+    });
+};
 
-  //   // 獎項1：分兩段滾輪 + 中間暫停動畫
-  //   const halfRounds = Math.floor(fullRounds / 2);
 
-  //   // 第一段滾輪：滾到距離中獎者還 3 格的位置（修正避免空白或消失）
-  //   const preTargetIndexes = reels.map((r, i) => {
-  //     const target = reelTargetIndexes[i];
-  //     const fullLength = r.mapIndex.length;
-  //     return (target - 3 + fullLength) % fullLength;
-  //   });
-
-  //   await Promise.all([
-  //     spinReel(reels[0], preTargetIndexes[0], firstHalfTime, 0, halfRounds),
-  //     spinReel(reels[1], preTargetIndexes[1], firstHalfTime, 0, halfRounds),
-  //     spinReel(reels[2], preTargetIndexes[2], firstHalfTime, 0, halfRounds)
-  //   ]);
-
-  //   // 暫停 + 動畫（你的淡出/彈入/空白邏輯）
-  //   await freezeMidAnimation(2000);
-
-  //   // 第二段滾輪：分別啟動，每軸帶入小 delay 以產生依序停的感覺
-  //   const p0 = spinReel(reels[0], reelTargetIndexes[0], reelDurations[0] / 2, 0, fullRounds - halfRounds)
-  //     .then(() => highlightReel(0));
-  //   const p1 = spinReel(reels[1], reelTargetIndexes[1], reelDurations[1] / 2, 150, fullRounds - halfRounds)
-  //     .then(() => highlightReel(1));
-  //   const p2 = spinReel(reels[2], reelTargetIndexes[2], reelDurations[2] / 2, 300, fullRounds - halfRounds)
-  //     .then(() => highlightReel(2));
-
-  //   await Promise.all([p0, p1, p2]);
-
-  //   handleWinnerText(winner);
-  //   populateSpecialPrizeList();
-
-  //   setTimeout(() => {
-  //     main.classList.remove('active');
-  //     lever.classList.remove('no-glow');
-  //     startAutoScroll();
-  //     isConfirming = false;
-  //   }, 4000);
-  // } else {
-    // 其他獎項保持原流程
-    const p0 = spinReel(reels[0], reelTargetIndexes[0], reelDurations[0], 0, fullRounds)
-      .then(() => {
-        highlightReel(0)
-        playDon();
-      });
-    const p1 = spinReel(reels[1], reelTargetIndexes[1], reelDurations[1], 0, fullRounds)
-      .then(() => {
-        highlightReel(1)
-        playDon();
-      });
-    const p2 = spinReel(reels[2], reelTargetIndexes[2], reelDurations[2], 0, fullRounds)
-      .then(() => {
-        highlightReel(2)
-        playDon();
-      })
-      .then(() => {
-        // 最終停齊位置正中
-        handleWinnerText(winner);
-
-        if (dropdownButton.dataset.value === "1") {
-          stopDrawSound();
-          playWinSound();
-          playCheer();
-        } else {
-          stopDrawSound();
-          playWinSound();
-        };
-
-        setTimeout(() => {
-          main.classList.remove('active');
-          lever.classList.remove('no-glow');
-          reels.forEach(reel => {
-            const totalHeight = reel.items.length * ITEM_HEIGHT;
-            reel.position = ((reel.position % totalHeight) + totalHeight) % totalHeight;
-          });
-          startAutoScroll();
-          isConfirming = false;
-        }, 4000);
-      });
-  };
-// };
 
 
 function spinReel(reel, targetIndex, duration = 3000, delay = 0, fullRounds = 3) {
   return new Promise(resolve => {
     setTimeout(() => {
       const startTime = performance.now();
-      const startPos = reel.position;
+
       const totalHeight = ITEM_HEIGHT * reel.items.length;
       const viewportHeight = document.querySelector('.scroll-viewport').offsetHeight;
       const centerOffset = (viewportHeight / 2) - (ITEM_HEIGHT / 2);
 
+      // 統一從上往下
+      const startPos = ((reel.position % totalHeight) + totalHeight) % totalHeight;
 
+      // 找目標 item
       const totalItems = reel.mapIndex.length;
       let reelTargetItemIndex = null;
       for (let i = 0; i < totalItems; i++) {
-        if (reel.mapIndex[i] === targetIndex) {
-          if (i * ITEM_HEIGHT >= startPos) {
-            reelTargetItemIndex = i;
-            break;
-          };
+        if (reel.mapIndex[i] === targetIndex && i * ITEM_HEIGHT >= startPos) {
+          reelTargetItemIndex = i;
+          break;
         };
       };
-
       if (reelTargetItemIndex === null) {
         for (let i = totalItems - 1; i >= 0; i--) {
           if (reel.mapIndex[i] === targetIndex) {
@@ -664,33 +626,36 @@ function spinReel(reel, targetIndex, duration = 3000, delay = 0, fullRounds = 3)
 
       const targetPos = reelTargetItemIndex * ITEM_HEIGHT;
 
-      function easeOutQuad(t) {
-        return t * (2 - t);
+      // travelDistance 保留 fullRounds
+      const travelDistance = totalHeight * fullRounds + (targetPos - startPos);
+
+      // easing 函數：前快-中慢-後快
+      function easeInOutTriple(t) {
+        if (t < 0.2) return t * 3 * 0.5;           // 前快
+        if (t < 0.7) return 0.3 + (t - 0.2) * 0.4; // 中慢
+        return 0.7 + (t - 0.7) * 0.3 / 0.3;       // 後快
       };
 
       function animate(now) {
         let t = (now - startTime) / duration;
-        if (t > 1) t = 1;
-
-        const eased = easeOutQuad(t);
-        const distance = (targetPos - startPos + totalHeight * fullRounds);
-        const currentPos = startPos + distance * eased;
-
-        const displayPos = ((currentPos % totalHeight) + totalHeight) % totalHeight;
-
-        reel.position = displayPos;
-        reel.el.style.transform = `translateY(-${displayPos}px)`;
-
-        if (t < 1) {
-          requestAnimationFrame(animate);
-        } else {
+        if (t >= 1) {
           const finalTransform = targetPos - centerOffset;
           reel.el.style.transform = `translateY(-${finalTransform}px)`;
           reel.position = finalTransform;
-          reel.position
           reel.finalItemIndex = reelTargetItemIndex;
           resolve();
+          return;
         };
+
+        const progress = easeInOutTriple(t);
+        const currentPos = startPos + travelDistance * progress;
+
+        // 統一從上往下
+        const displayPos = ((currentPos % totalHeight) + totalHeight) % totalHeight;
+        reel.el.style.transform = `translateY(-${displayPos}px)`;
+        reel.position = displayPos;
+
+        requestAnimationFrame(animate);
       };
 
       requestAnimationFrame(animate);
@@ -700,72 +665,73 @@ function spinReel(reel, targetIndex, duration = 3000, delay = 0, fullRounds = 3)
 
 
 
-
 function highlightReel(i) {
   const reel = reels[i];
-  reel.items.forEach(item =>
-    item.classList.remove('winner-highlight'));
-    if (reel.finalItemIndex !== null) {
-      reel.items[reel.finalItemIndex] ?.classList.add('winner-highlight');
-    };
+  reel.items.forEach(item => item.classList.remove('winner-highlight'));
+
+  if (reel.finalItemIndex !== null) {
+    reel.items[reel.finalItemIndex]?.classList.add('winner-highlight');
+  };
 };
+
+
 
 
 // 紙花特效
 
-function showWinnerEffect() {
-  if (typeof confetti !== 'undefined') {
-    const count = 800;
-    const defaults = { origin: { x: 0.5, y: 0.6 } };
-    function fire(ratio, opts) { confetti({ ...defaults, ...opts, particleCount: Math.floor(count * ratio) }); }
-    fire(0.25, { spread: 26, startVelocity: 55 });
-    fire(0.2, { spread: 60 });
-    fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
-    fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
-    fire(0.1, { spread: 120, startVelocity: 45 });
-    confetti({ origin: { x: 0.1, y: 0.9 }, angle: 60, spread: 100, startVelocity: 45, particleCount: 200, scalar: 1.1, decay: 0.9 });
-    confetti({ origin: { x: 0.9, y: 0.9 }, angle: 120, spread: 100, startVelocity: 45, particleCount: 200, scalar: 1.1, decay: 0.9 });
-  };
-  if (dropdownButton.dataset.value === "1") {
-    [0.2, 0.4, 0.6, 0.8].forEach((x, i) => {
-      setTimeout(() => showFireworks(x), i * 220);
-    });
-  } else {
-    return;
-  };
-};
+// function showWinnerEffect() {
+//   if (typeof confetti !== 'undefined') {
+//     const count = 800;
+//     const defaults = { origin: { x: 0.5, y: 0.6 } };
+//     function fire(ratio, opts) { confetti({ ...defaults, ...opts, particleCount: Math.floor(count * ratio) }); }
+//     fire(0.25, { spread: 26, startVelocity: 55 });
+//     fire(0.2, { spread: 60 });
+//     fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
+//     fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
+//     fire(0.1, { spread: 120, startVelocity: 45 });
+//     confetti({ origin: { x: 0.1, y: 0.9 }, angle: 60, spread: 100, startVelocity: 45, particleCount: 200, scalar: 1.1, decay: 0.9 });
+//     confetti({ origin: { x: 0.9, y: 0.9 }, angle: 120, spread: 100, startVelocity: 45, particleCount: 200, scalar: 1.1, decay: 0.9 });
+//   };
+//   if (dropdownButton.dataset.value === "1") {
+//     [0.2, 0.4, 0.6, 0.8].forEach((x, i) => {
+//       setTimeout(() => showFireworks(x), i * 220);
+//     });
+//   } else {
+//     return;
+//   };
+// };
 
-//煙火特效
-function showFireworks(x = 0.5) {
-  //上升
-  confetti({
-    particleCount: 36,
-    angle: 90,
-    spread: 6,
-    startVelocity: 95,
-    gravity: 0.32,
-    decay: 0.97,
-    ticks: 280,
-    scalar: 0.55,
-    colors: ['#FFD700'],
-    origin: { x, y: 1 }
-  });
+// //煙火特效
+// function showFireworks(x = 0.5) {
+//   //上升
+//   confetti({
+//     particleCount: 36,
+//     angle: 90,
+//     spread: 6,
+//     startVelocity: 95,
+//     gravity: 0.32,
+//     decay: 0.97,
+//     ticks: 280,
+//     scalar: 0.55,
+//     colors: ['#FFD700'],
+//     origin: { x, y: 1 }
+//   });
 
-  // 爆炸
-  setTimeout(() => {
-    confetti({
-      particleCount: 220,
-      spread: 360,
-      startVelocity: 38,
-      gravity: 0.28,
-      decay: 0.97,
-      ticks: 380,
-      scalar: 0.95,
-      colors: ['#FFD700', '#FF4D4D', '#FFFFFF'],
-      origin: { x, y: 0.4 }
-    });
-  }, 620);
-};
+//   // 爆炸
+//   setTimeout(() => {
+//     confetti({
+//       particleCount: 220,
+//       spread: 360,
+//       startVelocity: 38,
+//       gravity: 0.28,
+//       decay: 0.97,
+//       ticks: 380,
+//       scalar: 0.95,
+//       colors: ['#FFD700', '#FF4D4D', '#FFFFFF'],
+//       origin: { x, y: 0.4 }
+//     });
+//   }, 620);
+// };
 
 
 function showShareExceedToast(remaining, shareAmount, exceed, onConfirm, onCancel) {
@@ -972,7 +938,6 @@ function handleWinnerText(winner) {
 
   winnerLists.forEach(list => list.insertBefore(li.cloneNode(true), list.firstChild));
 
-  showWinnerEffect();
   updateCounts();
   saveState();
 };
