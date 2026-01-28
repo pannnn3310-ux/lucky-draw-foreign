@@ -317,7 +317,7 @@ function startAutoScroll() {
   let lastTime = performance.now();
 
   function step(now) {
-    const delta = now - lastTime;
+    let delta = now - lastTime;
     lastTime = now;
 
     reels.forEach((reel, idx) => {
