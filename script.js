@@ -118,6 +118,7 @@ const prizeAmounts = {
 
 
 
+
 const ITEM_HEIGHT = 120;
 
 //設定拉霸三軸
@@ -209,7 +210,8 @@ function getFullRounds(prizeValue) {
     9: 12,
     10: 12,
     11: 12,
-    12: 12
+    12: 12,
+    13: 12
   };
   return roundsMap[prizeValue] || 3;
 };
@@ -548,7 +550,8 @@ async function doDraw() {
     9: 9000,                      //16s
     10: 9000,                     //16s
     11: 9000,                     //16s
-    12: 9000,
+    12: 9000,                     //16s
+    13: 9000,                     //16s
   };
 
 
@@ -852,6 +855,9 @@ function handleWinnerText(winner) {
     specialBonusText = specialPrizeAmountInput.value
       ? `${Number(specialPrizeAmountInput.value).toLocaleString()}`
       : "";
+  } else if (prizeValue === "13") {
+      companyPrizeValue = 0;
+      specialBonusValue = 3000;
   };
 
 
@@ -891,6 +897,9 @@ function handleWinnerText(winner) {
       <p>${displayText}【金額：${specialBonusText}】：${prizeAmountsText}</p>
       <p style="color:#D67158;">【${bonus2Text}】</p>
     `;
+  } else if (prizeValue === "13") {
+        li.innerHTML = `
+      <p>${displayText}【金額：${specialBonusValue}】：${prizeAmountsText}</p>`;
   } else {
     li.innerHTML = `
       <p>${displayText}${prizeAmountsText}</p>
