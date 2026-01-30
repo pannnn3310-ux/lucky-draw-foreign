@@ -425,14 +425,14 @@ document.querySelectorAll('.lever .prize-btn').forEach(btn => {
 
 
     const prizeLimits = {
-      "1": 1,   // 一獎：只能抽 1 人
-      "2": 2,   // 二獎：可抽 2 人
-      "3": 3,   // 三獎：可抽 3 人
+      "1": 3,         // 一獎
+      "2": 3,         // 二獎
+      "3": 3,         // 三獎
       "9": Infinity,  // 幸運分享獎不限
-      "10": Infinity, // 加碼獎不限
-      "11": Infinity, // 額外獎不限
-      "12": 5,
-      "13": 1
+      "10": Infinity, // 現金加碼獎不限
+      "11": Infinity, // 特別追加獎不限
+      "12": 3,        // 追加獎
+      "13": 3         // 東莞大寶-熱情贊助獎
     };
 
     const selectedPrize = dropdownButton.dataset.value;
