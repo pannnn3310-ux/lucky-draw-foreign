@@ -567,6 +567,48 @@ async function doDraw() {
   const prizeValue = parseInt(dropdownButton.dataset.value) || 1;
   const fullRounds = getFullRounds(prizeValue);
 
+  // === 統一三軸滾動距離（不改秒數的關鍵）===
+  const totalHeight = ITEM_HEIGHT * reels[0].items.length;
+
+  const travelDistances = reels.map(reel => {
+    const startPos = ((reel.position % totalHeight) + totalHeight) % totalHeight;
+
+    let targetItemIndex = null;
+    for (let i = 0; i < reel.mapIndex.length; i++) {
+      if (reel.mapIndex[i] === winnerIndex && i * ITEM_HEIGHT >= startPos) {
+        targetItemIndex = i;
+        break;
+      }
+    }
+    if (targetItemIndex === null) {
+      for (let i = reel.mapIndex.length - 1; i >= 0; i--) {
+        if (reel.mapIndex[i] === winnerIndex) {
+          targetItemIndex = i;
+          break;
+        }
+      }
+    }
+
+    const targetPos = targetItemIndex * ITEM_HEIGHT;
+    return totalHeight * fullRounds + (targetPos - startPos);
+  });
+
+  // 取最大距離，三軸共用
+  const unifiedDistance = Math.max(...travelDistances);
+
+
+  const finalTargetItemIndex = (() => {
+    const reel = reels[0];
+    const totalItems = reel.mapIndex.length;
+
+    for (let i = 0; i < totalItems; i++) {
+      if (reel.mapIndex[i] === winnerIndex) {
+        return i;
+      }
+    }
+    return 0;
+  })();
+
   let reelDurations;
 
     reelDurations = [
@@ -595,17 +637,17 @@ async function doDraw() {
   const centerOffset = (viewportHeight / 2) - (ITEM_HEIGHT / 2);
 
   playDrawSound();
-  const p0 = spinReel(reels[0], reelTargetIndexes[0], reelDurations[0], 0, fullRounds)
+  const p0 = spinReel(reels[0], reelTargetIndexes[0], reelDurations[0], 0, fullRounds, unifiedDistance, finalTargetItemIndex)
     .then(() => {
       highlightReel(0)
       playDon();
     });
-  const p1 = spinReel(reels[1], reelTargetIndexes[1], reelDurations[1], 0, fullRounds)
+  const p1 = spinReel(reels[1], reelTargetIndexes[1], reelDurations[1], 0, fullRounds, unifiedDistance, finalTargetItemIndex)
     .then(() => {
       highlightReel(1)
       playDon();
     });
-  const p2 = spinReel(reels[2], reelTargetIndexes[2], reelDurations[2], 0, fullRounds)
+  const p2 = spinReel(reels[2], reelTargetIndexes[2], reelDurations[2], 0, fullRounds, unifiedDistance, finalTargetItemIndex)
     .then(() => {
       highlightReel(2)
       playDon();
@@ -632,7 +674,8 @@ async function doDraw() {
 
 
 
-function spinReel(reel, targetIndex, duration = 3000, delay = 0, fullRounds = 3) {
+function spinReel(reel, targetIndex, duration = 3000, delay = 0,fullRounds = 3, unifiedDistance, finalTargetItemIndex
+) {
   return new Promise(resolve => {
     setTimeout(() => {
       const startTime = performance.now();
@@ -646,13 +689,9 @@ function spinReel(reel, targetIndex, duration = 3000, delay = 0, fullRounds = 3)
 
       // 找目標 item
       const totalItems = reel.mapIndex.length;
-      let reelTargetItemIndex = null;
-      for (let i = 0; i < totalItems; i++) {
-        if (reel.mapIndex[i] === targetIndex && i * ITEM_HEIGHT >= startPos) {
-          reelTargetItemIndex = i;
-          break;
-        };
-      };
+      const reelTargetItemIndex = finalTargetItemIndex;
+      const targetPos = reelTargetItemIndex * ITEM_HEIGHT;
+
       if (reelTargetItemIndex === null) {
         for (let i = totalItems - 1; i >= 0; i--) {
           if (reel.mapIndex[i] === targetIndex) {
@@ -662,10 +701,7 @@ function spinReel(reel, targetIndex, duration = 3000, delay = 0, fullRounds = 3)
         };
       };
 
-      const targetPos = reelTargetItemIndex * ITEM_HEIGHT;
-
-      // travelDistance 保留 fullRounds
-      const travelDistance = totalHeight * fullRounds + (targetPos - startPos);
+      const travelDistance = unifiedDistance;
 
       function animate(now) {
         let t = (now - startTime) / duration;
