@@ -107,6 +107,12 @@ document.addEventListener('click', e => {
   };
 });
 
+document.getElementById('show-winners-btn').addEventListener('click', () => {
+  localStorage.setItem('winnerData', JSON.stringify(winnerData));
+
+  window.open('winnersData.html', '_blank');
+});
+
 
 // 1~3 獎的固定金額
 const prizeAmounts = {
@@ -958,6 +964,8 @@ function handleWinnerText(winner) {
     id: winner.id,
     name: winner.name,
     prize: prizeText.textContent,
+    prizeValue: parseInt(dropdownButton.dataset.value, 10),
+    drawOrder: winnerData.length,
     bonusSource: bonusText,
     prizeAmounts: companyPrizeValue,
     specialBonus: specialBonusValue,
