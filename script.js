@@ -941,9 +941,13 @@ function handleWinnerText(winner) {
 
   const isSharePrize = prizeValue === "9"
 
-  let shareToId = isSharePrize
-  ? specialPrizeInput.dataset.id || null
-  : null;
+  let shareToId = null;
+  let shareToName = null;
+
+  if (isSharePrize) {
+    shareToId = specialPrizeInput.dataset.id || null;
+    shareToName = specialPrizeInput.value?.trim() || null;
+  };
 
   if (isSharePrize && shareToId) {
     // 透過輸入值找到被分享的中獎人
@@ -971,6 +975,7 @@ function handleWinnerText(winner) {
     specialBonus: specialBonusValue,
     bonus2Source: bonus2Text,
     shareToId,
+    shareToName,
     shareAmount: isSharePrize ? Number(specialPrizeAmountInput.value || 0) : 0,
     shareToIndex: isSharePrize ? winnerData.length - 1 : null,
     balance: 0
