@@ -595,7 +595,6 @@ async function doDraw() {
   const centerOffset = (viewportHeight / 2) - (ITEM_HEIGHT / 2);
 
   playDrawSound();
-  // 其他獎項保持原流程
   const p0 = spinReel(reels[0], reelTargetIndexes[0], reelDurations[0], 0, fullRounds)
     .then(() => {
       highlightReel(0)
