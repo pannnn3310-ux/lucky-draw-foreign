@@ -119,7 +119,7 @@ const prizeAmounts = {
   1: 5000,
   2: 1500,
   3: 1000,
-  12: 3000,
+  12: 1000,
 };
 
 
@@ -925,7 +925,7 @@ function handleWinnerText(winner) {
       : "";
   } else if (prizeValue === "13") {
       companyPrizeValue = 0;
-      specialBonusValue = 3000;
+      specialBonusValue = 2000;
   };
 
 
