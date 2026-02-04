@@ -44,7 +44,7 @@ function stopDrawSound() {
 function playDon() {
   const a = new Audio(don.src);
   a.play();
-  a.onended = () => { a.src = ""; a = null; };
+  a.onended = () => { a.src = ""; };
 };
 
 function playCheer() {
@@ -225,32 +225,21 @@ function getFullRounds(prizeValue) {
 };
 
 
-function populateReels(prizeValue) {
+function populateReels() {
   reels.forEach(r => {
     r.el.innerHTML = '';
     r.items = [];
     r.mapIndex = [];
-    r.position = 0;
   });
 
-  const rounds = getFullRounds(prizeValue);
-  const baseLength = allNames.length;
+  const minReelLength = 15;
+  const allLength = allNames.length;
 
-  const MIN_TOTAL = Math.max(
-    rounds * baseLength,
-    baseLength * 5
-  );
+  // 若名單比最小長度短，計算需要補多少
+  const padCount = Math.max(0, Math.floor((minReelLength - allLength) / 2));
 
-  // 統一用一份index序列
-  const indexSequence = [];
-  for (let i = 0; i < MIN_TOTAL; i++) {
-    indexSequence.push(i % baseLength);
-  }
-
-  // 依序灌入三軸
-  indexSequence.forEach(idx => {
-    const p = allNames[idx];
-
+  // ===== 主名單 =====
+  allNames.forEach((p, i) => {
     reels.forEach((r, reelIndex) => {
       const div = document.createElement('div');
       div.className = 'symbol';
@@ -261,11 +250,74 @@ function populateReels(prizeValue) {
 
       r.el.appendChild(div);
       r.items.push(div);
-      r.mapIndex.push(idx);
+      r.mapIndex.push(i);
     });
   });
-}
 
+
+  if (padCount > 0) {
+    reels.forEach((r, reelIndex) => {
+      for (let i = 0; i < padCount; i++) {
+        // 前補（從尾巴往前取）
+        const beforeIndex = (allLength - padCount + i) % allLength;
+        const beforePerson = allNames[beforeIndex];
+        const divBefore = document.createElement('div');
+        divBefore.className = 'symbol';
+        divBefore.textContent =
+          reelIndex === 0 ? beforePerson.dept :
+          reelIndex === 1 ? beforePerson.id :
+          beforePerson.name;
+
+        r.el.insertBefore(divBefore, r.el.firstChild);
+        r.items.unshift(divBefore);
+        r.mapIndex.unshift(beforeIndex);
+
+        // 後補
+        const afterIndex = i % allLength;
+        const afterPerson = allNames[afterIndex];
+        const divAfter = document.createElement('div');
+        divAfter.className = 'symbol';
+        divAfter.textContent =
+          reelIndex === 0 ? afterPerson.dept :
+          reelIndex === 1 ? afterPerson.id :
+          afterPerson.name;
+
+        r.el.appendChild(divAfter);
+        r.items.push(divAfter);
+        r.mapIndex.push(afterIndex);
+      };
+    });
+  };
+};
+
+
+function ensureReelLoop(reel, reelIndex) {
+  const viewportHeight = document.querySelector('.scroll-viewport').offsetHeight;
+  const threshold = ITEM_HEIGHT * 3; // 提前3筆追加
+  if (reel.position + viewportHeight > reel.items.length * ITEM_HEIGHT - threshold) {
+    appendReelItems(reel.items.length);
+  };
+};
+
+function appendReelItems(startIndex) {
+  reels.forEach(r => {
+    const total = allNames.length;
+    // 每軸追加 ITEM_HEIGHT 高度的元素
+    for (let i = startIndex; i < startIndex + 3; i++) {
+      const idx = i % total;
+      const p = allNames[idx];
+      const div = document.createElement('div');
+      div.className = 'symbol';
+      // 依軸選顯示
+      div.textContent = r.el === reels[0].el ? p.dept
+                        : r.el === reels[1].el ? p.id
+                        : p.name;
+      r.el.appendChild(div);
+      r.items.push(div);
+      r.mapIndex.push(idx);
+    };
+  });
+};
 
 
 
@@ -284,6 +336,7 @@ function startAutoScroll() {
       const speed = ITEM_HEIGHT * 1;
       reel.position += speed * (delta / 1000);
 
+      ensureReelLoop(reel, idx); // 傳入 reelIndex
 
       const totalHeight = ITEM_HEIGHT * reel.items.length;
       reel.el.style.transform = `translateY(-${reel.position % totalHeight}px)`;
@@ -651,7 +704,7 @@ function spinReel(reel, targetIndex, duration = 3000, delay = 0,fullRounds = 3, 
 
       // 找目標 item
       const totalItems = reel.mapIndex.length;
-      let reelTargetItemIndex = finalTargetItemIndex;
+      const reelTargetItemIndex = finalTargetItemIndex;
       const targetPos = reelTargetItemIndex * ITEM_HEIGHT;
 
       if (reelTargetItemIndex === null) {
@@ -886,7 +939,6 @@ function handleWinnerText(winner) {
       ? `${Number(specialPrizeAmountInput.value).toLocaleString()}`
       : "";
   };
-
 
 
   const companyPrizeAmount = companyPrizeValue
@@ -1134,6 +1186,7 @@ function buildWinnerDropdown(inputEl) {
     return;
   };
 
+
   // ★ 關鍵：從最後一筆開始
   for (let i = winnerData.length - 1; i >= 0; i--) {
     const w = winnerData[i];
@@ -1155,7 +1208,6 @@ function buildWinnerDropdown(inputEl) {
   dropdown.style.display = "block";
 };
 
-
 function filterWinnerDropdown(keyword) {
   const dropdown = document.getElementById('winner-dropdown');
   const items = dropdown.querySelectorAll('button');
@@ -1170,22 +1222,6 @@ function filterWinnerDropdown(keyword) {
 
   dropdown.style.display = hasVisible ? "block" : "none";
 };
-
-function filterWinnerDropdown(keyword) {
-  const dropdown = document.getElementById('winner-dropdown');
-  const items = dropdown.querySelectorAll('button');
-
-  let hasVisible = false;
-
-  items.forEach(item => {
-    const match = item.textContent.includes(keyword);
-    item.style.display = match ? "block" : "none";
-    if (match) hasVisible = true;
-  });
-
-  dropdown.style.display = hasVisible ? "block" : "none";
-};
-
 
 //現金加碼
 
