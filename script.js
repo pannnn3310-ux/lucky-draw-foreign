@@ -593,16 +593,16 @@ async function doDraw() {
       if (reel.mapIndex[i] === winnerIndex && i * ITEM_HEIGHT >= startPos) {
         targetItemIndex = i;
         break;
-      }
-    }
+      };
+    };
     if (targetItemIndex === null) {
       for (let i = reel.mapIndex.length - 1; i >= 0; i--) {
         if (reel.mapIndex[i] === winnerIndex) {
           targetItemIndex = i;
           break;
-        }
-      }
-    }
+        };
+      };
+    };
 
     const targetPos = targetItemIndex * ITEM_HEIGHT;
     return totalHeight * fullRounds + (targetPos - startPos);
@@ -619,8 +619,8 @@ async function doDraw() {
     for (let i = 0; i < totalItems; i++) {
       if (reel.mapIndex[i] === winnerIndex) {
         return i;
-      }
-    }
+      };
+    };
     return 0;
   })();
 
@@ -1413,7 +1413,7 @@ clearAllBtn.addEventListener('click', () => {
 
 function setStickOffset(px) {
   stickChang.style.transform = `translateY(calc(0% + ${px}px))`;
-}
+};
 
 //防呆用
 
