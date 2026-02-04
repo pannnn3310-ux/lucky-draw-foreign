@@ -44,6 +44,7 @@ function stopDrawSound() {
 function playDon() {
   const a = new Audio(don.src);
   a.play();
+  a.onended = () => { a.src = ""; a = null; };
 };
 
 function playCheer() {
@@ -120,6 +121,7 @@ const prizeAmounts = {
   2: 1500,
   3: 1000,
   12: 1000,
+  13: 2000
 };
 
 
@@ -883,9 +885,6 @@ function handleWinnerText(winner) {
     specialBonusText = specialPrizeAmountInput.value
       ? `${Number(specialPrizeAmountInput.value).toLocaleString()}`
       : "";
-  } else if (prizeValue === "13") {
-      companyPrizeValue = 0;
-      specialBonusValue = 2000;
   };
 
 
@@ -925,9 +924,6 @@ function handleWinnerText(winner) {
       <p>${displayText}【金額：${specialBonusText}】：${prizeAmountsText}</p>
       <p style="color:#D67158;">【${bonus2Text}】</p>
     `;
-  } else if (prizeValue === "13") {
-        li.innerHTML = `
-      <p>${displayText}【金額：${specialBonusValue}】：${prizeAmountsText}</p>`;
   } else {
     li.innerHTML = `
       <p>${displayText}${prizeAmountsText}</p>
@@ -1138,7 +1134,10 @@ function buildWinnerDropdown(inputEl) {
     return;
   };
 
-  winnerData.forEach(w => {
+  // ★ 關鍵：從最後一筆開始
+  for (let i = winnerData.length - 1; i >= 0; i--) {
+    const w = winnerData[i];
+
     const btn = document.createElement('button');
     btn.type = "button";
     btn.className = "list-group-item list-group-item-action";
@@ -1151,9 +1150,25 @@ function buildWinnerDropdown(inputEl) {
     });
 
     dropdown.appendChild(btn);
-  });
+  };
 
   dropdown.style.display = "block";
+};
+
+
+function filterWinnerDropdown(keyword) {
+  const dropdown = document.getElementById('winner-dropdown');
+  const items = dropdown.querySelectorAll('button');
+
+  let hasVisible = false;
+
+  items.forEach(item => {
+    const match = item.textContent.includes(keyword);
+    item.style.display = match ? "block" : "none";
+    if (match) hasVisible = true;
+  });
+
+  dropdown.style.display = hasVisible ? "block" : "none";
 };
 
 function filterWinnerDropdown(keyword) {
@@ -1296,7 +1311,10 @@ function saveState() {
 
       `;
 
-      winnerLists.forEach(list => list.appendChild(li.cloneNode(true)));
+      winnerLists.forEach(list => {
+        const clone = li.cloneNode(true);
+        list.appendChild(clone);
+      });
     };
 
     updateCounts();
@@ -1313,13 +1331,13 @@ function saveState() {
 clearAllBtn.addEventListener('click', () => {
   if (winnerData.length === 0) return;
 
-  // 顯示確認 toast
   const confirmBody = document.querySelector('#confirm-toast-body');
-  confirmBody.innerHTML  = `
-  <div class="text-center"
-    <p>確定要移除<span class="text-danger">所有歷史名單</span>嗎？</p>
-    <p>刪除後無法復原！</p>
-  </div>`;
+  confirmBody.innerHTML = `
+    <div class="text-center">
+      <p>確定要移除<span class="text-danger">所有歷史名單</span>嗎？</p>
+      <p>刪除後無法復原！</p>
+    </div>
+  `;
 
   const confirmToastEl = document.querySelector('#confirm-toast');
   const confirmToast = new bootstrap.Toast(confirmToastEl);
@@ -1328,42 +1346,32 @@ clearAllBtn.addEventListener('click', () => {
   const yesBtn = document.querySelector('#confirm-yes');
   const noBtn = document.querySelector('#confirm-no');
 
-  const cleanup = () => {
-    yesBtn.onclick = null;
-    noBtn.onclick = null;
-  };
-
-  yesBtn.onclick = () => {
-    cleanup();
+  const onConfirm = () => {
     confirmToast.hide();
 
-    // 清除記憶資料
     winnerData = [];
     drawnWinners.clear();
 
-    // 清空畫面
     winnerLists.forEach(list => list.innerHTML = '');
 
-    // 清除 localStorage
     localStorage.removeItem(`${STORAGE_KEY}_winnerData`);
     localStorage.removeItem(`${STORAGE_KEY}_drawnWinners`);
 
-    //更新統計
     updateCounts();
 
-    //成功 Toast
-    const successBody = document.getElementById("success-toast-body");
+    const successBody = document.querySelector('#success-toast-body');
     successBody.innerHTML = `<p class="m-0">已清除所有中獎名單</p>`;
-    const successToastEl = document.getElementById("success-toast");
-    const successToast = new bootstrap.Toast(successToastEl);
-    successToast.show();
+    new bootstrap.Toast(document.querySelector('#success-toast')).show();
   };
 
-  noBtn.onclick = () => {
-    cleanup();
+  const onCancel = () => {
     confirmToast.hide();
   };
+
+  yesBtn.addEventListener('click', onConfirm, { once: true });
+  noBtn.addEventListener('click', onCancel, { once: true });
 });
+
 
 //拉霸高度用
 
