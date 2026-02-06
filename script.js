@@ -218,7 +218,7 @@ function getFullRounds(prizeValue) {
     9: 12,
     10: 12,
     11: 12,
-    12: 12,
+    12: 9,
     13: 12
   };
   return roundsMap[prizeValue] || 3;
@@ -612,13 +612,23 @@ async function doDraw() {
     return 0;
   })();
 
+  const noDelayPrizes12 = [12];
+
   let reelDurations;
 
+  reelDurations = [
+    800 + fullRounds * 200,
+    800 + fullRounds * 200 + 3000,
+    800 + fullRounds * 200 + 3000
+  ];
+
+  if (noDelayPrizes12.includes(prizeValue)) {
     reelDurations = [
-      800 + fullRounds * 200,
+      800 + fullRounds * 200 + 3000,
       800 + fullRounds * 200 + 3000,
       800 + fullRounds * 200 + 3000
     ];
+  };
 
 
   const prizeExtraTimeMap = {
@@ -628,7 +638,7 @@ async function doDraw() {
     9: 9000,                      //16s
     10: 9000,                     //16s
     11: 9000,                     //16s
-    12: 9000,                     //16s
+    12: 1900,                     //16s
     13: 9000,                     //16s
   };
 
