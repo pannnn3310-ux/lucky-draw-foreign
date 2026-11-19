@@ -15,11 +15,16 @@
       <div class="container">
           <div class="row">
               <div class="col-2 smore-img">
-                <div class="prize-tabs d-flex w-100 justify-content-center gap-4">
+                <div class="prize-tabs ">
                   <button data-prize="all" class="activebtn btn btn-light">全部</button>
                   <button data-prize="1" class="btn btn-light">頭獎</button>
                   <button data-prize="2" class="btn btn-light">二獎</button>
                   <button data-prize="3" class="btn btn-light">三獎</button>
+                  <button data-prize="4" class="btn btn-light">四獎</button>
+                  <button data-prize="5" class="btn btn-light">五獎</button>
+                  <button data-prize="6" class="btn btn-light">六獎</button>
+                  <button data-prize="7" class="btn btn-light">七獎</button>
+                  <button data-prize="8" class="btn btn-light">八獎</button>
                   <button data-prize="9" class="btn btn-light">幸運分享獎</button>
                   <button data-prize="10" class="btn btn-light">現金加碼獎</button>
                   <button data-prize="12" class="btn btn-light">追加獎</button>
@@ -116,6 +121,7 @@ li span {
     font-size: 20px;
     font-weight: 500;
     padding: 10px;
+    margin: 0 1px;
   }
 }
 
@@ -130,7 +136,7 @@ li span {
   display: flex;
   justify-content: end;
   flex: 1;
-  text-align: center;
+  text-align: end;
 }
 </style>
 <script>
@@ -174,22 +180,28 @@ function renderList(data) {
 
   data.forEach(w => {
     const li = document.createElement('li');
-
     const bonusText = w.specialBonus ? `  ${w.specialBonus}` : '';
     const amountText = w.prizeAmounts ? w.prizeAmounts : '';
+    const prize = document.createElement('span');
+    prize.className = 'left-col fs-4';
+    prize.textContent = `${w.prize}【金額：${amountText}${bonusText}元】`;
 
-    const shareHTML = (w.prizeValue === 9 && w.shareToName)
-    ? `<div class="left-col fs-4">分享人：${w.shareToName}</div>`
-    : '';
+    const share = document.createElement('span');
+    share.className = 'center-col fs-4';
+    const shareSource = w.bonus || w.shareToName || '';
+    // 分享來源使用實際紀錄欄位並以 textContent 輸出，兼容舊欄位且避免 HTML 注入。
+    if (w.prizeValue === 9 && shareSource) {
+      const shareName = document.createElement('div');
+      shareName.className = 'left-col fs-4';
+      shareName.textContent = `分享人：${shareSource}`;
+      share.appendChild(shareName);
+    }
 
-    li.innerHTML = `
-      <span class="left-col fs-4">
-        ${w.prize}【金額：${amountText}${bonusText}元】
-      </span>
-      <span class="right-col fs-4">
-        ${w.dept} - ${w.name}
-      </span>
-    `;
+    const person = document.createElement('span');
+    person.className = 'right-col fs-4';
+    person.textContent = `${w.dept} - ${w.name}`;
+
+    li.append(prize, share, person);
     list.appendChild(li);
   });
 }

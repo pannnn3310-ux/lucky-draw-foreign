@@ -13,6 +13,7 @@ body {
   background-color: #1E2A38;
 }
 
+/* 全視覺背景 */
 body::before {
   content: "";
   position: fixed;
@@ -32,7 +33,7 @@ ol, ul {
   position: relative;
   overflow: hidden;
   min-height: 900px;
-  padding-top: 150px;
+  padding-top: 100px;
 }
 .main .container {
   position: relative;
@@ -53,7 +54,7 @@ ol, ul {
   height: 400px;
   position: relative;
   z-index: 10;
-  overflow: visible;
+  overflow: hidden;
   background: linear-gradient(180deg, #F8D97E 0%, #F4C27A 60%, #f7c188 100%);
   border: 2px solid #fff9c7;
   border-radius: 20px;
@@ -85,13 +86,9 @@ ol, ul {
   flex-direction: column;
 }
 .slot .symbol {
-  height: 120px;
+  height: 90px;
+  line-height: 90px;
   font-weight: bold;
-  display: flex;
-  align-items: center; /* 垂直置中 */
-  justify-content: center; /* 水平置中 */
-  font-weight: bold;
-  text-align: center;
 }
 .slot .reel {
   border-right: 1px solid #acacac;
@@ -99,98 +96,220 @@ ol, ul {
 .slot .reel:last-child {
   border-right: none;
 }
-.slot .symbol.winner-highlight {
-  font-size: 1.2em;
-  font-weight: bold;
-  background: rgba(208, 103, 87, 0.2);
-}
-@media (max-width: 768px) {
-  .slot .symbol.winner-highlight {
-    font-size: 26px;
-    white-space: nowrap;
-  }
-}
 
+
+/* 拉霸桿，仿 Lucky Slot 紅球 + 銀色金屬桿 + 金色固定座
+ */
 .stick {
-  position: relative;
-  z-index: 15;
-  right: -2px;
-  background-color: transparent;
-  height: 300px;
+    position: relative;
+    z-index: 30;
+    right: 18px;
+    perspective: 800px;
+    transform-style: preserve-3d;
+    height: 430px;
+    min-width: 112px;
+    overflow: visible;
+    background: transparent;
 }
+/* 金色固定座 */
 .stick::before {
-  content: "";
-  position: absolute;
-  width: 80px;
-  height: 30px;
-  top: 77%;
-  left: -30%;
-  background: linear-gradient(85deg, rgb(255, 176, 79) 0%, rgb(255, 182, 105) 0%, #f7c188 100%);
-  border: 1.5px solid #fff9c7;
-  border-left: 0px;
-  border-radius: 0 20px 20px 0px;
+    content: "";
+    position: absolute;
+    z-index: 2;
+    width: 80px;
+    height: 126px;
+    top: 61%;
+    left: -13px;
+    border: 5px solid #8b310d;
+    border-left-width: 3px;
+    border-radius: 14px 55px 55px 14px;
+    background:
+        radial-gradient(
+            circle at 68% 32%,
+            rgba(255, 255, 255, 0.75) 0 6%,
+            transparent 7%
+        ),
+        linear-gradient(
+            90deg,
+            #b64a0f 0%,
+            #ffb923 24%,
+            #fff08c 48%,
+            #e8860e 72%,
+            #a83b0c 100%
+        );
+
+    box-shadow:
+        inset 0 0 0 4px #ffd257,
+        inset -12px -8px 18px rgba(111, 35, 4, 0.28),
+        7px 8px 0 rgba(91, 24, 7, 0.55),
+        8px 13px 20px rgba(0, 0, 0, 0.35);
+};
+/* 紅球旁邊的小星星 */
+.stick::after {
+    content: "✦";
+    position: absolute;
+    top: 56px;
+    left: 87px;
+    color: #ffd84c;
+    font-size: 30px;
+    line-height: 1;
+    text-shadow:
+        0 0 8px #ff8a20,
+        0 0 14px #ffe66b;
+    animation: leverSpark 1.5s infinite ease-in-out;
+    pointer-events: none;
 }
 
+
+/* 拉霸桿固定軌道 */
 .lottery-button {
-  position: absolute;
-  width: 25px;
-  height: 120px;
-  top: 47%;
-  left: 30px;
-  background: linear-gradient(-85deg, #f0b14f 0%, #fcc488 60%);
-  border: 2.5px solid #ffc7c7;
-  border-radius: 30px;
-  box-shadow: 0px 1px 2px rgba(245, 17, 17, 0.1);
-  transform-origin: bottom center;
-  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    position: absolute;
+    width: 26px;
+    height: 230px;
+    top: 20%;
+    left: 10px;
+    border: 4px solid #7e3516;
+    border-radius: 18px;
+    background:
+        linear-gradient(
+            90deg,
+            #7b351d 0%,
+            #d88948 14%,
+            #fff8d5 38%,
+            #ffffff 50%,
+            #f3d091 66%,
+            #a55323 88%,
+            #6b2b16 100%
+        );
+    box-shadow:
+        inset 3px 0 3px rgba(255,255,255,.85),
+        inset -4px 0 5px rgba(87,28,8,.35),
+        7px 7px 0 rgba(78,22,9,.42),
+        8px 11px 16px rgba(0,0,0,.35);
+    transform: none;
+    transition:
+        height 0.45s cubic-bezier(.22,.8,.25,1),
+        top 0.45s cubic-bezier(.22,.8,.25,1);
 }
+/* 拉霸紅色球頭 */
 .lottery-button::after {
-  content: "";
-  position: absolute;
-  width: 70px;
-  height: 70px;
-  top: -30px;
-  left: -22px;
-  background: linear-gradient(30deg, #D64545 40%, #FF7A6A 100%);
-  border: 1px solid #fa6b6b;
-  border-radius: 50%;
-  transition: top 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  box-shadow: 0 0 10px rgba(255, 77, 77, 0.5), 0 0 20px rgba(255, 77, 77, 0.3), 0 0 30px rgba(255, 77, 77, 0.2);
-  animation: glow 2s infinite ease-in-out;
-}
+    content: "";
+    position: absolute;
+    z-index: 3;
+    width: 88px;
+    height: 88px;
 
-.no-glow::after {
-  animation: none;
-  box-shadow: none;
-}
+    top: -55px;
 
+    /* 固定水平位置 */
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid #7d170f;
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle at 32% 23%,
+            #fff7dc 0 7%,
+            rgba(255,255,255,.75) 8% 13%,
+            transparent 14%
+        ),
+        radial-gradient(
+            circle at 42% 36%,
+            #ff8c77 0%,
+            #f54838 38%,
+            #c81718 70%,
+            #7c0c12 100%
+        );
+
+    box-shadow:
+        inset -12px -15px 18px rgba(98,4,10,.38),
+        inset 8px 8px 12px rgba(255,255,255,.28),
+        0 0 0 4px #ffab35,
+        8px 10px 0 rgba(81,14,9,.45),
+        0 0 22px rgba(255,75,46,.75);
+
+    transition:
+        top 0.45s cubic-bezier(.22,.8,.25,1),
+        transform 0.45s cubic-bezier(.22,.8,.25,1);
+
+    animation: leverGlow 1.8s infinite ease-in-out;
+}
 .lottery-button.pull {
-  top: 75%;
-  height: 27px;
+    height: 55px;
+    top: 55%;
+}
+/* 球永遠保持在桿子正中央 */
+.lottery-button.pull::after {
+    top: -5px;
+    transform: translateX(-50%) scale(0.96);
 }
 
-.lottery-button.pull::after {
-  top: 5px;
-}
 
 .trigger-draw {
-  position: absolute;
-  width: 70px;
-  height: 70px;
-  top: -30px;
-  left: -22px;
-  background: transparent;
-  border: none;
-  z-index: 2;
+    position: absolute;
+    width: 96px;
+    height: 96px;
+    top: -62px;
+    left: -39px;
+    z-index: 5;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    cursor: pointer;
 }
+/* 鍵盤操作時才顯示焦點 */
+.trigger-draw:focus-visible {
+    outline: 4px solid #fff1a6;
+    outline-offset: 7px;
+}
+/* 不要讓 button 自己位移 */
 .trigger-draw:active {
-  transform: translateY(4px);
+    transform: none;
+}
+
+
+
+/* 抽獎期間取消球頭閃光 */
+.no-glow::after {
+    animation: none;
+    box-shadow:
+        inset -12px -15px 18px rgba(98, 4, 10, 0.38),
+        inset 8px 8px 12px rgba(255, 255, 255, 0.28),
+        0 0 0 4px #ffab35,
+        8px 10px 0 rgba(81, 14, 9, 0.45);
+}
+
+/* 紅球呼吸亮度 */
+@keyframes leverGlow {
+    0%,
+    100% {
+        filter: brightness(1);
+    }
+    50% {
+        filter: brightness(1.17);
+    }
+}
+
+
+
+/* 小星光 */
+@keyframes leverSpark {
+    0%,
+    100% {
+        transform: scale(0.85) rotate(0deg);
+        opacity: 0.55;
+    }
+    50% {
+        transform: scale(1.16) rotate(16deg);
+        opacity: 1;
+    }
 }
 
 #prize-btn {
   position: relative;
+  z-index: 6;
 }
-
 #prize-btn.dropdown-toggle {
   font-size: 3.5rem;
   font-weight: 500;
@@ -202,7 +321,6 @@ ol, ul {
   box-shadow: none !important;
   background-color: transparent !important;
 }
-
 #prize-btn + .dropdown-menu {
   left: 50% !important;
   top: 100% !important;
@@ -243,6 +361,13 @@ ol, ul {
 .winner-list p {
   margin: 30px 0;
 }
+.winner-list p.winner-share-summary {
+  margin: 0 0 0.4em;
+}
+.winner-list p.winner-share-source {
+  margin: 0;
+  color: #413d376e	;
+}
 
 @keyframes glow {
   0%, 100% {
@@ -252,9 +377,22 @@ ol, ul {
     box-shadow: 0 0 20px rgba(255, 77, 77, 0.7), 0 0 40px rgba(255, 77, 77, 0.5), 0 0 60px rgba(255, 77, 77, 0.3);
   }
 }
-/* --- 超狂電視壞掉效果 --- */
-/* RGB 分裂 */
-/* 主畫面震動 */
+
+.freeze-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0);
+  -webkit-backdrop-filter: none;
+          backdrop-filter: none;
+  pointer-events: none;
+  transition: 0.3s ease;
+}
+.freeze-overlay.active {
+  background: rgba(0, 0, 0, 0.4);
+  -webkit-backdrop-filter: blur(4px);
+          backdrop-filter: blur(4px);
+}
+
 #hand-animation-container {
   width: 400px;
   height: 400px;
@@ -281,6 +419,7 @@ ol, ul {
     box-shadow: 0 0 10px rgba(219, 219, 219, 0.858), 0 0 20px rgba(154, 154, 154, 0.901), 0 0 30px rgba(241, 241, 241, 0.928);
   }
 }
+
 #special-balance-btn {
   animation: start 3s infinite ease-in-out;
   text-shadow: 0 0 50px #fff, 0 0 150px #fff, 0 0 20px #fff;
@@ -305,7 +444,6 @@ ol, ul {
   z-index: 1;
   background: rgba(0, 0, 0, 0.2);
 }
-
 .bg-marquee-track {
   display: inline-block;
   white-space: nowrap;
@@ -328,3 +466,518 @@ ol, ul {
 .p-6 {
   padding-top: 80px;
 }/*# sourceMappingURL=all.css.map */
+
+/* 2027 四碼抽獎版 */
+.draw-code-title {
+  margin-bottom: 18px;
+  color: #fff;
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: .3em;
+}
+
+.slot {
+  --draw-highlight-color: #d64242;
+  --draw-highlight-background: #d64242;
+}
+.slot .reel { flex: 1 1 25%; min-width: 0; }
+.slot .digit-symbol {
+  font-size: 4.5rem;
+  font-weight: 900;
+  color: #26384d;
+  text-align: center;
+}
+/* 拉霸停止同步修正 */
+.slot .symbol,
+.slot .digit-symbol {
+  transition: none !important;
+}
+
+
+#scroll-area {
+  position: relative;
+}
+
+/* 中獎紅色區域紅框邊界對齊弧形分隔線 */
+.stop-indicator {
+    position: absolute;
+    top: 90px;
+    height: 90px;
+    width: 25%;
+    z-index: 20;
+    pointer-events: none;
+    opacity: 0;
+    box-sizing: border-box;
+    border: none;
+    border-radius: 0;
+    background: linear-gradient(180deg, #ef4a38 0%, #d62828 48%, #a91416 100%);
+    box-shadow:
+        inset 0 3px 0 rgba(255, 202, 71, .9),
+        inset 0 -3px 0 rgba(255, 202, 71, .9),
+        inset 0 0 18px rgba(255, 210, 90, .28);
+    transition: none !important;
+}
+.stop-indicator[data-reel-index="0"] {
+    left: 0;
+    width: calc(25% - 12px);
+}
+.stop-indicator[data-reel-index="1"] {
+    left: calc(25% - 12px);
+    width: calc(25% + 12px);
+}
+.stop-indicator[data-reel-index="2"] {
+    left: 50%;
+    width: calc(25% + 12px);
+}
+.stop-indicator[data-reel-index="3"] {
+    left: calc(75% + 12px);
+    width: calc(25% - 12px);
+}
+.stop-indicator.is-visible { opacity: 1; }
+
+/* Lucky Slot visual refresh */
+.slot-machine-shell {
+  position: relative;
+  z-index: 10;
+  margin: 0 auto;
+  padding: 108px 30px 28px;
+  max-width: 920px;
+  border-radius: 54px 54px 32px 32px;
+  background:
+    linear-gradient(180deg, #ff4b27 0%, #dc291b 34%, #b91616 100%);
+  box-shadow:
+    10px 5px 5px 5px #6a160e,
+    0 24px 32px rgba(0,0,0,.42),
+    inset 0 0 0 5px #ffb62e,
+    inset 0 0 25px rgba(255,207,75,.45);
+}
+.slot-machine-shell::before {
+  content: "";
+  position: absolute;
+  left: 7%; right: 7%; top: 30px;
+  height: 112px;
+  background: linear-gradient(180deg,#ff3b22,#c81418);
+  border: 5px solid #8c1c13;
+  border-radius: 50% 50% 10px 10px;
+  box-shadow: inset 0 0 0 4px #ffb72d, 0 8px 12px rgba(0,0,0,.25);
+  z-index: 0;
+}
+.slot-brand {
+  position: absolute;
+  z-index: 2;
+  top: 35px; left: 50%;
+  width: 88%;
+  transform: translateX(-50%);
+  color: #fff3b2;
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 900;
+  font-size: clamp(2.5rem, 5vw, 50px);
+  line-height: 1;
+  letter-spacing: .02em;
+  text-shadow: 0 5px 0 #8f180f, 0 0 4px #fff, 0 0 14px #ffc536;
+  -webkit-text-stroke: 3px #ffcf40;
+  paint-order: stroke fill;
+  white-space: nowrap;
+}
+.slot-brand span + span { margin-left: .12em; }
+.slot-crown {
+  position:absolute;
+  top: -200px; left: 50%;
+  z-index:3;
+  transform:translateX(-50%);
+  color:#fff2a5;
+  font-size:5rem;
+  line-height:1;
+  text-shadow:0 4px 0 #9e2418,0 0 10px #ffe16a;
+}
+.slot-machine-shell.hide-slot-crown .slot-crown { display:none; }
+/* LUCKY SLOT 下方：幸運抽獎碼 */
+
+.slot-subtitle {
+    position: absolute;
+    z-index: 5;
+    top: 40px; /* 放在 LUCKY SLOT 正下方 */
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 48%;
+    color: #fff4c4;
+    font-size: 2.5rem;
+    font-weight: 900;
+    letter-spacing: 0.22em;
+    white-space: nowrap;
+    /* 立體效果 */
+    text-shadow:
+        0 2px 0 #9a150f,
+        0 0 8px rgba(255, 225, 100, 0.45);
+}
+
+
+/* 左右星星 */
+.slot-subtitle span {
+    display: inline-block;
+    color: #ffd93d;
+    font-size: 2.4rem;
+
+    text-shadow:
+        0 0 6px #ff9e22,
+        0 0 12px rgba(255, 220, 65, 0.8);
+}
+
+
+/* 燈泡容器共同設定 */
+.slot-bulbs {
+  position: absolute;
+  z-index: 10;
+  pointer-events: none;
+}
+/* 上下燈泡 */
+.slot-bulbs:not(.slot-bulbs-side) {
+  left: 34px;
+  right: 34px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+/* 上排位置 */
+.slot-bulbs-top {
+  top: 8px;
+}
+/* 下排位置 */
+.slot-bulbs-bottom {
+  left: 5px;
+  right: 5px;
+  bottom: 14px;
+}
+/* 左右燈泡 */
+.slot-bulbs-side {
+  top: 40px;
+  bottom: 30px;
+  width: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.slot-bulbs-left {
+  left: 5px;
+}
+.slot-bulbs-right {
+  right: 5px;
+}
+
+
+/* 單顆燈泡 */
+.slot-bulb {
+  position: relative;
+  display: block;
+  flex: 0 0 16px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle at center,
+      #ffffff 0 15%,
+      #fdf8c1 17% 27%,
+      #dbc055 30% 44%,
+      transparent 47%
+    );
+  transform-origin: center;
+  animation:
+    slotBulbBreath 2.5s ease-in-out infinite;
+}
+
+
+
+/* 星芒。平常就存在 */
+.slot-bulb::before,
+.slot-bulb::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  pointer-events: none;
+  opacity: .65;
+  transform:
+    translate(-50%, -50%)
+    scale(.88);
+}
+/* 橫向星芒 */
+.slot-bulb::before {
+  width: 25px;
+  height: 2px;
+  background:
+    linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 217, 63, 0.15) 15%,
+      #ffe96a 35%,
+      #ffffff 50%,
+      #ffe96a 65%,
+      rgba(255, 217, 63, 0.15) 85%,
+      transparent 100%
+    );
+}
+/* 縱向星芒 */
+.slot-bulb::after {
+  width: 2px;
+  height: 25px;
+  background:
+    linear-gradient(
+      180deg,
+      transparent 0%,
+      rgba(255, 217, 63, 0.15) 15%,
+      #ffe96a 35%,
+      #ffffff 50%,
+      #ffe96a 65%,
+      rgba(255, 217, 63, 0.15) 85%,
+      transparent 100%
+    );
+}
+
+
+/* 平常呼吸效果 */
+@keyframes slotBulbBreath {
+  0%,
+  100% {
+    opacity: .55;
+    filter:
+      brightness(.90)
+      drop-shadow(0 0 1px #ffd93f);
+    transform: scale(.94);
+  }
+  50% {
+    opacity: .92;
+    filter:
+      brightness(1.25)
+      drop-shadow(0 0 3px #ffe86a);
+    transform: scale(1.04);
+  }
+}
+
+
+
+/* 抽獎追逐燈 */
+.slot-bulb.is-lit {
+  opacity: 1 !important;
+  filter:
+    brightness(1.9)
+    drop-shadow(0 0 2px #ffffff)
+    drop-shadow(0 0 4px #ffd93f) !important;
+  transform: scale(1.12);
+}
+/* 抽獎時橫向星芒加長 */
+.slot-bulb.is-lit::before {
+  width: 32px;
+  opacity: 1;
+  transform:
+    translate(-50%, -50%)
+    scale(1);
+}
+/* 抽獎時縱向星芒加長 */
+.slot-bulb.is-lit::after {
+  height: 32px;
+  opacity: 1;
+  transform:
+    translate(-50%, -50%)
+    scale(1);
+}
+
+.slot-machine-shell::after {
+  content:none;
+}
+
+.slot-machine-shell .slot {
+  height: 286px;
+  padding: 0 !important;
+  border: 8px solid #ffbf36;
+  border-radius: 28px;
+  background: linear-gradient(180deg,#7f170f,#c62918);
+  box-shadow: inset 0 0 0 5px #7c170f, inset 0 0 18px rgba(0,0,0,.55), 0 6px 0 #72160f;
+}
+.slot-machine-shell .slot::before { display:none; }
+.slot-machine-shell .draw-code-title { display:none; }
+.slot-machine-shell .scroll-viewport {
+  height:270px;
+  border:4px solid #7c2e18;
+  border-radius:34px / 48px;
+  background:
+    linear-gradient(90deg, rgba(113,54,30,.26), transparent 12%, transparent 88%, rgba(113,54,30,.26)),
+    linear-gradient(180deg,#f3d9ba,#fff8e7 20%,#fff5df 76%,#e0b99a) !important;
+  box-shadow:
+    inset 0 0 22px rgba(123,59,28,.28),
+    inset 14px 0 20px rgba(111,55,31,.14),
+    inset -14px 0 20px rgba(111,55,31,.14);
+}
+.slot-machine-shell .scroll-viewport::before,
+.slot-machine-shell .scroll-viewport::after {
+  content:""; position:absolute; left:-1%; right:-1%; height:58px; z-index:18; pointer-events:none;
+}
+.slot-machine-shell .scroll-viewport::before {
+  top:0;
+  border-radius:0 0 50% 50% / 0 0 30% 30%;
+  background:linear-gradient(180deg,rgba(111,54,30,.42),rgba(174,112,72,.16) 52%,transparent);
+  box-shadow:inset 0 8px 10px rgba(102,48,25,.2);
+}
+.slot-machine-shell .scroll-viewport::after {
+  bottom:0;
+  border-radius:50% 50% 0 0 / 30% 30% 0 0;
+  background:linear-gradient(0deg,rgba(111,54,30,.38),rgba(174,112,72,.14) 52%,transparent);
+  box-shadow:inset 0 -8px 10px rgba(102,48,25,.18);
+}
+
+.slot-curved-dividers {
+    position: absolute;
+    inset: 0;
+    z-index: 50;
+    pointer-events: none;
+}
+.slot-curved-dividers span {
+  position:absolute;
+  top:-14px;
+  bottom:-14px;
+  width:24px;
+  border-radius:50%;
+}
+.slot-curved-dividers span:nth-child(1) {
+  left:calc(25% - 12px);
+  border-left:3px solid #a86637;
+}
+.slot-curved-dividers span:nth-child(2) {
+  left:calc(50% - 1.5px);
+  width:3px;
+  border-radius:0;
+  background:#a86637;
+}
+.slot-curved-dividers span:nth-child(3) {
+  left:calc(75% - 12px);
+  border-right:3px solid #a86637;
+}
+.slot-curved-dividers span:nth-child(1),
+.slot-curved-dividers span:nth-child(3) {
+  filter:drop-shadow(0 0 3px rgba(116,62,31,.38));
+}
+.slot-machine-shell .reel {
+  border-right:none;
+  box-shadow: inset 7px 0 12px rgba(116,62,31,.12), inset -7px 0 12px rgba(116,62,31,.12);
+}
+.slot-machine-shell .digit-symbol {
+  color:#312052;
+  font-family: "Arial Black", "Noto Sans TC", sans-serif;
+  font-size:4.8rem;
+  text-shadow:0 2px 0 rgba(255,255,255,.6);
+}
+.slot-start-area { padding: 18px 0 2px; text-align:center; }
+.start-draw-btn {
+  min-width: 54%;
+  padding: 14px;
+  border: 5px solid #ffc84f;
+  border-radius: 999px;
+  background: linear-gradient(180deg,#ff654d 0%,#ff0f03 58%,#b81015 100%);
+  color:#fff5c9;
+  font-size:clamp(1.8rem,3.2vw,3rem);
+  font-weight:900;
+  letter-spacing:.12em;
+  text-shadow:0 3px 0 #9e1712;
+  box-shadow:0 7px 0 #76130f,0 10px 22px rgba(0,0,0,.32),inset 0 5px 6px rgba(255,255,255,.35);
+  transition: transform .08s ease, filter .15s ease;
+  animation:leverGlow 1.8s infinite ease-in-out;
+  margin-bottom: 30px;
+}
+.start-draw-btn:hover { filter:none; }
+.start-draw-btn:active { transform:translateY(5px); box-shadow:0 2px 0 #76130f,0 5px 12px rgba(0,0,0,.28); }
+.start-draw-btn:disabled { filter:grayscale(.6); opacity:.65; cursor:not-allowed; }
+@media (max-width: 1199px) {
+  .slot-machine-shell { padding-left:20px; padding-right:20px; }
+  .slot-brand { font-size:3.4rem; }
+  .slot-subtitle { top:86px; }
+}
+
+/* 中獎數字：白字固定顯示在紅底上 */
+.slot .digit-symbol.winner-highlight {
+    position: relative;
+    z-index: 60;
+    isolation: isolate;
+    font-size: 5.2rem !important;
+    font-weight: 900 !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    background: transparent !important;
+    transform: none !important;
+    transition: none !important;
+    text-shadow:
+        0 3px 0 #8a1511,
+        0 0 8px rgba(255,255,255,.80),
+        0 0 14px rgba(255,215,90,.35) !important;
+}
+
+.winner-announcement {
+  position: fixed;
+  inset: 0;
+  z-index: 15000;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: rgba(15, 13, 20, .68);
+  pointer-events: none;
+}
+.winner-announcement[hidden] {
+  display: none;
+}
+.winner-announcement-banner {
+  width: 100%;
+  padding: 28px 20px 34px;
+  text-align: center;
+  color: #fff5c9;
+  background: linear-gradient(110deg, #ee6563, #ed3824 48%, #ee6563);
+  border-top: 6px solid #ffc84f;
+  border-bottom: 6px solid #ffc84f;
+  box-shadow: 0 0 40px rgba(237, 180, 36, 0.841);
+  opacity: 0;
+  transform: translateX(110vw);
+}
+.winner-announcement.is-active .winner-announcement-banner {
+  animation: winner-marquee 6.2s ease-in-out forwards;
+}
+.winner-announcement-code {
+  font-family: "Arial Black", "Noto Sans TC", sans-serif;
+  font-size: clamp(5rem, 17vw, 14rem);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: .16em;
+  padding-left: .16em;
+  color: #fff;
+  text-shadow: 0 5px 0 #8e1512, 0 0 22px rgba(255, 230, 115, .95);
+}
+.winner-announcement-name {
+  margin-top: 14px;
+  font-size: clamp(1.8rem, 5vw, 4rem);
+  font-weight: 900;
+  letter-spacing: .08em;
+  text-shadow: 0 3px 0 #8e1512;
+}
+@keyframes winner-marquee {
+  0% {
+    opacity: 0;
+    transform: translateX(110vw);
+  }
+  10% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  90% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-110vw);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .winner-announcement.is-active .winner-announcement-banner {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
