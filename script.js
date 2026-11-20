@@ -468,7 +468,7 @@ function checkSpecialAmount(input) {
     const value = Number(input.value);
     input.classList.toggle(
         'is-invalid',
-        input.value !== '' && value < 2000
+        input.value !== '' && value < 1000
     );
 };
 
@@ -1086,8 +1086,16 @@ function announceWinner(winner) {
     throw new Error('找不到中獎揭曉元件');
   };
 
-  winnerAnnouncementCode.textContent = winner.drawCode;
-  winnerAnnouncementName.textContent = `🎉🎉 ${winner.dept} - ${winner.name} 🎉🎉`;
+  const deptDiv = document.createElement('div');
+  deptDiv.className = 'winner-dept';
+  deptDiv.textContent = `🎉 ${winner.dept} 🎉`;
+
+  const nameDiv = document.createElement('div');
+  nameDiv.className = 'winner-name';
+  nameDiv.textContent = `${winner.name}`;
+
+  winnerAnnouncementName.replaceChildren(deptDiv, nameDiv);
+
   winnerAnnouncement.hidden = false;
   winnerAnnouncement.setAttribute('aria-hidden', 'false');
   winnerAnnouncement.classList.remove('is-active');
@@ -1413,7 +1421,7 @@ $('#export-btn')?.addEventListener('click', () => {
   const worksheet = XLSX.utils.aoa_to_sheet([headers, ...rows]);
   const workbook = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(workbook, worksheet, '中獎名單');
-  XLSX.writeFile(workbook, '大寶2027年尾牙中獎名單.xlsx');
+  XLSX.writeFile(workbook, '大寶2027年尾牙中獎名單(菲籍).xlsx');
 });
 $('#show-winners-btn')?.addEventListener('click', () => {
   localStorage.setItem('winnerData', JSON.stringify(winnerData));
