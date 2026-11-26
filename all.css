@@ -55,7 +55,7 @@ ol, ul {
   position: relative;
   z-index: 10;
   overflow: hidden;
-  background: linear-gradient(180deg, #F8D97E 0%, #F4C27A 60%, #f7c188 100%);
+  background: linear-gradient(180deg, #e2860f 0%, #F4C27A 60%, #f7c188 100%);
   border: 2px solid #fff9c7;
   border-radius: 20px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35), inset 0 2px 4px rgba(255, 255, 255, 0.25);
@@ -120,7 +120,7 @@ ol, ul {
     height: 126px;
     top: 61%;
     left: -13px;
-    border: 5px solid #8b310d;
+    border: 5px solid #a10d03;
     border-left-width: 3px;
     border-radius: 14px 55px 55px 14px;
     background:
@@ -133,7 +133,7 @@ ol, ul {
             90deg,
             #b64a0f 0%,
             #ffb923 24%,
-            #fff08c 48%,
+            #ffe08c 48%,
             #e8860e 72%,
             #a83b0c 100%
         );
@@ -143,12 +143,12 @@ ol, ul {
         inset -12px -8px 18px rgba(111, 35, 4, 0.28),
         7px 8px 0 rgba(91, 24, 7, 0.55),
         8px 13px 20px rgba(0, 0, 0, 0.35);
-};
+}
 /* 紅球旁邊的小星星 */
 .stick::after {
     content: "✦";
     position: absolute;
-    top: 56px;
+    top: 25px;
     left: 87px;
     color: #ffd84c;
     font-size: 30px;
@@ -219,7 +219,7 @@ ol, ul {
             #ff8c77 0%,
             #f54838 38%,
             #c81718 70%,
-            #7c0c12 100%
+            #7c740c 100%
         );
 
     box-shadow:
@@ -513,7 +513,7 @@ ol, ul {
     background: linear-gradient(180deg, #ef4a38 0%, #d62828 48%, #a91416 100%);
     box-shadow:
         inset 0 3px 0 rgba(255, 202, 71, .9),
-        inset 0 -3px 0 rgba(255, 202, 71, .9),
+        inset 0 -3px 0 rgba(255, 169, 71, 0.9),
         inset 0 0 18px rgba(255, 210, 90, .28);
     transition: none !important;
 }
@@ -544,11 +544,11 @@ ol, ul {
   max-width: 920px;
   border-radius: 54px 54px 32px 32px;
   background:
-    linear-gradient(180deg, #ff4b27 0%, #dc291b 34%, #b91616 100%);
+    linear-gradient(180deg, #f1b819 0%, #ffe16a 34%, #f1b819 100%);
   box-shadow:
     10px 5px 5px 5px #6a160e,
     0 24px 32px rgba(0,0,0,.42),
-    inset 0 0 0 5px #ffb62e,
+    inset 0 0 0 5px #6a160e,
     inset 0 0 25px rgba(255,207,75,.45);
 }
 .slot-machine-shell::before {
@@ -556,10 +556,10 @@ ol, ul {
   position: absolute;
   left: 7%; right: 7%; top: 30px;
   height: 112px;
-  background: linear-gradient(180deg,#ff3b22,#c81418);
-  border: 5px solid #8c1c13;
+  background: linear-gradient(180deg,#FF2E1D,#c22123);
+  border: 5px solid #7a0b04;
   border-radius: 50% 50% 10px 10px;
-  box-shadow: inset 0 0 0 4px #ffb72d, 0 8px 12px rgba(0,0,0,.25);
+  box-shadow: inset 0 0 0 4px #B90E11, 0 8px 12px rgba(0,0,0,.25);
   z-index: 0;
 }
 .slot-brand {
@@ -574,7 +574,7 @@ ol, ul {
   font-size: clamp(2.5rem, 5vw, 50px);
   line-height: 1;
   letter-spacing: .02em;
-  text-shadow: 0 5px 0 #8f180f, 0 0 4px #fff, 0 0 14px #ffc536;
+  text-shadow: 0 5px 0 #b90e11, 0 0 4px #fff, 0 0 14px #ffc536;
   -webkit-text-stroke: 3px #ffcf40;
   paint-order: stroke fill;
   white-space: nowrap;
@@ -585,7 +585,7 @@ ol, ul {
   top: -200px; left: 50%;
   z-index:3;
   transform:translateX(-50%);
-  color:#fff2a5;
+  color:#ffdfa5;
   font-size:5rem;
   line-height:1;
   text-shadow:0 4px 0 #9e2418,0 0 10px #ffe16a;
@@ -679,7 +679,7 @@ ol, ul {
       circle at center,
       #ffffff 0 15%,
       #fdf8c1 17% 27%,
-      #dbc055 30% 44%,
+      #e7905d 30% 44%,
       transparent 47%
     );
   transform-origin: center;
@@ -704,7 +704,7 @@ ol, ul {
 }
 /* 橫向星芒 */
 .slot-bulb::before {
-  width: 25px;
+  width: 30px;
   height: 2px;
   background:
     linear-gradient(
@@ -721,7 +721,7 @@ ol, ul {
 /* 縱向星芒 */
 .slot-bulb::after {
   width: 2px;
-  height: 25px;
+  height: 30px;
   background:
     linear-gradient(
       180deg,
@@ -790,10 +790,10 @@ ol, ul {
 .slot-machine-shell .slot {
   height: 286px;
   padding: 0 !important;
-  border: 8px solid #ffbf36;
+  border: 8px solid #c71b15;
   border-radius: 28px;
   background: linear-gradient(180deg,#7f170f,#c62918);
-  box-shadow: inset 0 0 0 5px #7c170f, inset 0 0 18px rgba(0,0,0,.55), 0 6px 0 #72160f;
+  box-shadow: inset 0 0 0 5px #7c170f, inset 0 0 18px rgba(0,0,0,.55), 0 6px 0 #AC0C06;
 }
 .slot-machine-shell .slot::before { display:none; }
 .slot-machine-shell .draw-code-title { display:none; }
@@ -841,7 +841,7 @@ ol, ul {
 }
 .slot-curved-dividers span:nth-child(1) {
   left:calc(25% - 12px);
-  border-left:3px solid #a86637;
+  border-left: 3px solid #a86637;
 }
 .slot-curved-dividers span:nth-child(2) {
   left:calc(50% - 1.5px);
@@ -871,15 +871,15 @@ ol, ul {
 .start-draw-btn {
   min-width: 54%;
   padding: 14px;
-  border: 5px solid #ffc84f;
+  border: 5px solid #eba91b;
   border-radius: 999px;
-  background: linear-gradient(180deg,#ff654d 0%,#ff0f03 58%,#b81015 100%);
-  color:#fff5c9;
+  background: linear-gradient(180deg,#f3c180 0%,#eebe3b 58%,#F3BD22 100%);
+  color:#ca0d06;
   font-size:clamp(1.8rem,3.2vw,3rem);
   font-weight:900;
   letter-spacing:.12em;
-  text-shadow:0 3px 0 #9e1712;
-  box-shadow:0 7px 0 #76130f,0 10px 22px rgba(0,0,0,.32),inset 0 5px 6px rgba(255,255,255,.35);
+  text-shadow:0 3px 0 #fff5c9;
+  box-shadow:0 7px 0 #a70c06,0 10px 22px rgba(0,0,0,.32),inset 0 5px 6px rgba(255,255,255,.35);
   transition: transform .08s ease, filter .15s ease;
   animation:leverGlow 1.8s infinite ease-in-out;
   margin-bottom: 30px;

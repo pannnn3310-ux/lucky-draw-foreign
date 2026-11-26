@@ -1,4 +1,4 @@
-let allNames = []; //完整名單，現金加碼以工號查找，不要求抽獎碼。
+let allNames = []; //完整參加名單。
 let eligibleNames = []; //取得有效四碼者，正式抽獎只能從此名單抽出。
 let winnerData = []; //中獎紀錄，包含獎項、金額、分享金額、現金加碼等資訊。
 let drawnWinners = new Set(); //已中獎人選
@@ -27,7 +27,6 @@ const winnerAnnouncementCode = $('#winner-announcement-code');
 const winnerAnnouncementName = $('#winner-announcement-name');
 const fileInput = $('#file-input');
 const cashInput = $('#special-prize-input2');
-const cashDropdown = $('#special-prize-dropdown2');
 const amountInput = $('#special-prize-amount-input');
 const shareInput = $('#special-prize-input');
 const shareDropdown = $('#winner-dropdown');
@@ -169,14 +168,16 @@ function updatePrizeLabels() {
     const remaining = getPrizeRemaining(value);
 
     // 一般有限制數量的獎項
-    item.textContent =
-      remaining === null
-        ? prizeName
-        : `${prizeName}(${remaining})`;
+     // 一般有限制數量的獎項，除了追加獎不顯示
+    const hideRemaining = value === '12' || remaining === null;
+
+    item.innerHTML = hideRemaining
+      ? prizeName
+      : `${prizeName} - ${remaining}名`;
 
     // 如果目前就是選中的獎項，同步更新上方大標題
     if (prizeBtn.dataset.value === value) {
-      prizeBtn.textContent = item.textContent;
+        prizeBtn.innerHTML = item.innerHTML;
     };
   });
 };
@@ -867,7 +868,6 @@ document.querySelectorAll('.dropdown-menu .dropdown-item').forEach(item => {
     prizeBtn.textContent = item.textContent.trim();
 
     cashInput.value = '';
-    cashInput.dataset.id = '';
     shareInput.value = '';
     shareInput.dataset.id = '';
     shareInput.dataset.recordId = '';
@@ -892,42 +892,8 @@ document.querySelectorAll('.dropdown-menu .dropdown-item').forEach(item => {
   });
 });
 
-// 現金加碼：完整名單搜尋，以工號 dataset.id 驗證，不要求抽獎碼
-function renderCashMatches(keyword) {
-  cashDropdown.innerHTML = '';
-  const key = keyword.toLowerCase();
-  const matches = allNames.filter(person =>
-    `${person.id} ${person.dept} ${person.name}`.toLowerCase().includes(key)
-  );
-
-  matches.slice(0, 100).forEach(person => {
-    const row = document.createElement('button');
-    row.type = 'button';
-    row.className = 'dropdown-item';
-    row.textContent = `${person.id} - ${person.name}`;
-    row.addEventListener('mousedown', event => {
-      event.preventDefault();
-      cashInput.dataset.id = person.id;
-      cashInput.value = row.textContent;
-      cashDropdown.style.display = 'none';
-    });
-    cashDropdown.appendChild(row);
-  });
-  cashDropdown.style.display = matches.length ? 'block' : 'none';
-};
-
-cashInput?.addEventListener('input', () => {
-  cashInput.dataset.id = '';
-  const keyword = cashInput.value.trim();
-  if (!keyword) {
-    cashDropdown.style.display = 'none';
-    return;
-  }
-  renderCashMatches(keyword);
-});
 function getCashProvider() {
-  const id = normalizeId(cashInput?.dataset.id);
-  return id ? allNames.find(person => normalizeId(person.id) === id) || null : null;
+  return cashInput?.value.trim() || '';
 };
 
 // 幸運分享：只選仍有可分享餘額的既有中獎紀錄
@@ -1033,7 +999,7 @@ function buildDrawContext(value) {
   if (value === '10') {
     context.cashProvider = getCashProvider();
     if (!context.cashProvider) {
-      showToast('請從完整名單點選一位現金加碼人。');
+      showToast('請輸入現金加碼人姓名。');
       return null;
     };
     if (amount <= 0) {
@@ -1280,9 +1246,7 @@ function recordWinner(winner, context) {
     specialBonus: value === '10' || value === '11'
       ? context.amount
       : (value === '9' ? context.extraBonus : 0),
-    bonus2Source: context.cashProvider
-      ? `${context.cashProvider.dept} - ${context.cashProvider.name}`
-      : '',
+    bonus2Source: context.cashProvider || '',
     sharedAmount: 0
   };
   const previousSharedAmount = source?.sharedAmount;
