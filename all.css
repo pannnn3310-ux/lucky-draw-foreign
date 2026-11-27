@@ -662,7 +662,7 @@ ol, ul {
   left: 5px;
 }
 .slot-bulbs-right {
-  right: 5px;
+  right: 10px;
 }
 
 
@@ -671,15 +671,15 @@ ol, ul {
   position: relative;
   display: block;
   flex: 0 0 16px;
-  width: 16px;
-  height: 16px;
+  width: 25px;
+  height: 25px;
   border-radius: 50%;
   background:
     radial-gradient(
       circle at center,
       #ffffff 0 15%,
       #fdf8c1 17% 27%,
-      #e7905d 30% 44%,
+      #eb874d 30% 44%,
       transparent 47%
     );
   transform-origin: center;
@@ -704,16 +704,16 @@ ol, ul {
 }
 /* 橫向星芒 */
 .slot-bulb::before {
-  width: 30px;
+  width: 40px;
   height: 2px;
   background:
     linear-gradient(
       90deg,
       transparent 0%,
       rgba(255, 217, 63, 0.15) 15%,
-      #ffe96a 35%,
+      #ffec82 35%,
       #ffffff 50%,
-      #ffe96a 65%,
+      #ffec82 65%,
       rgba(255, 217, 63, 0.15) 85%,
       transparent 100%
     );
@@ -721,15 +721,15 @@ ol, ul {
 /* 縱向星芒 */
 .slot-bulb::after {
   width: 2px;
-  height: 30px;
+  height: 40px;
   background:
     linear-gradient(
       180deg,
       transparent 0%,
       rgba(255, 217, 63, 0.15) 15%,
-      #ffe96a 35%,
+      #ffec82 35%,
       #ffffff 50%,
-      #ffe96a 65%,
+      #ffec82 65%,
       rgba(255, 217, 63, 0.15) 85%,
       transparent 100%
     );
